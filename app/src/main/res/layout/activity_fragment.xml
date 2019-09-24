@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <fragment
+        android:layout_width="match_parent"
+
+        android:layout_height="match_parent"
+        android:id="@+id/left_fragment"
+        android:name="com.example.firstservice.fragment.LeftFragment"/>
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:id="@+id/fragment_container"/>
+<!--    <fragment-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_weight="1"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:id="@+id/right_fragment"-->
+<!--        android:name="com.example.firstservice.fragment.RightFragment"/>-->
+<!--    <fragment-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:layout_weight="1"-->
+<!--        android:id="@+id/another_right_fragment"-->
+<!--        android:name="com.example.firstservice.fragment.AnotherRightFragmnet"/>-->
+
+</LinearLayout>

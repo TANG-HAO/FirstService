@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="left fragmnet"
+        android:id="@+id/start_left_fragment"/>
+    <item android:title="right fragment"
+        android:id="@+id/start_right_fragment"/>
+</menu>
