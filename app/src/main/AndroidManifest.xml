@@ -29,6 +29,7 @@
         <activity android:name=".activity.ReclyViewActivity"/>
         <activity android:name=".activity.FragmentsActivity"/>
         <activity android:name=".activity.NewsActivity"/>
+        <activity android:name=".activity.NewsContentActivity"/>
     </application>
 
 </manifest>
