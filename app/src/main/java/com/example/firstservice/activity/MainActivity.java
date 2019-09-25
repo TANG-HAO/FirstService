@@ -6,6 +6,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
 import android.content.ComponentName;
@@ -23,6 +26,7 @@ import android.widget.Toast;
 
 
 import com.example.firstservice.R;
+import com.example.firstservice.fragment.MianFragment;
 import com.example.firstservice.service.DownloadService;
 import com.example.firstservice.service.MyIntentService;
 import com.example.firstservice.service.Myservice;
@@ -47,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //getActionBar().hide();
+        //replaceFragment(new MianFragment());
         initView();
         bindButton.setOnClickListener(new onBindClick());
         bindButton.setOnClickListener(new onBindClick());
@@ -178,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode){
             case 1:
-                if(grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
+                if(grantResults.length>0&&grantResults[0]!=PackageManager.PERMISSION_GRANTED){
                     Toast.makeText(this, "拒绝权限将无法使用程序", Toast.LENGTH_SHORT).show();
                     finish();
                 }
@@ -192,5 +197,15 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
     protected void onDestroy() {
         super.onDestroy();
         unbindService(connection);
+    }
+
+    private void replaceFragment(Fragment fragment,int startAddToBackStack) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.fragment_main_contanier,fragment);
+        if (startAddToBackStack==1){
+            transaction.addToBackStack(null);//将碎片添加到返回栈
+        }
+        transaction.commit();
     }
 }
