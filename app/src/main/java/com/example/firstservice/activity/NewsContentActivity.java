@@ -19,7 +19,7 @@ public class NewsContentActivity extends AppCompatActivity {
         String title = (String) getIntent().getExtras().get("title");
         String content = (String) getIntent().getExtras().get("content");
         NewsContentFragment fragmentById =(NewsContentFragment)getSupportFragmentManager().
-                findFragmentById(R.id.news_content_fragment);
+                findFragmentById(R.id.news_activity_fragment_content);
         fragmentById.refresh(title,content);
 
 
