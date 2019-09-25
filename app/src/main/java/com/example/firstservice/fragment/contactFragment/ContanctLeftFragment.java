@@ -1,10 +1,14 @@
 package com.example.firstservice.fragment.contactFragment;
 
 import android.Manifest;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +18,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -83,15 +88,39 @@ public class ContanctLeftFragment extends BaseFragment {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode){
             case 1:
-                if(grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
-                    readContanctor();
+                if(!shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS)){//todo 不起作用？？？
+                    askForPermission();
                 }else {
-                    Toast.makeText(getActivity(), "Denied", Toast.LENGTH_SHORT).show();
+                    if(grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
+                        readContanctor();
+                    }else {
+                        Toast.makeText(getActivity(), "Denied", Toast.LENGTH_SHORT).show();
+                    }
                 }
                 break;
             default:
         }
 
+    }
+
+    private void askForPermission() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Need Permission!");
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        builder.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                intent.setData(Uri.parse("package:" + getActivity().getPackageName())); // 根据包名打开对应的设置界面
+                startActivity(intent);
+            }
+        });
+        builder.create().show();
     }
 
     @Override

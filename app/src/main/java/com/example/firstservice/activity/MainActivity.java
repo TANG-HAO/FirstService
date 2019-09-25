@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
     private void initView() {
         toolbar=(Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(R.string.title);
+        //getSupportActionBar().setTitle(R.string.title);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         bindButton=(Button)findViewById(R.id.bindButton);
