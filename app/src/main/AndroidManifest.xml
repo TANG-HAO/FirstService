@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
 
     <application
         android:allowBackup="true"
@@ -31,6 +32,8 @@
         <activity android:name=".activity.FragmentsActivity"/>
         <activity android:name=".activity.NewsActivity"/>
         <activity android:name=".activity.NewsContentActivity"/>
+        <activity android:name=".activity.contanctActivity.ContanctRightActivity"/>
+        <activity android:name=".activity.contanctActivity.ContanctActivity"/>
     </application>
 
 </manifest>

@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 
 import com.example.firstservice.R;
+import com.example.firstservice.activity.contanctActivity.ContanctActivity;
 import com.example.firstservice.fragment.MianFragment;
 import com.example.firstservice.service.DownloadService;
 import com.example.firstservice.service.MyIntentService;
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
     private Button fragmentButton;
     private static final String TAG =MainActivity.class.getName();
     private Button newsButton;
+    private Button contanctButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         recycleViewButton.setOnClickListener(new onBindClick());
         fragmentButton.setOnLongClickListener(this);
         newsButton.setOnClickListener(new onBindClick());
+        contanctButton.setOnClickListener(new onBindClick());
 
         Intent intent = new Intent(this, DownloadService.class);
         startService(intent);
@@ -90,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         recycleViewButton=(Button)findViewById(R.id.to_recycle_view);
         fragmentButton=(Button)findViewById(R.id.fragmentButton);
         newsButton=(Button)findViewById(R.id.news_button);
+        contanctButton=(Button)findViewById(R.id.contanctButton);
     }
 
     @Override
@@ -174,6 +178,10 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
                 case R.id.news_button:
                     Intent intent4 = new Intent(MainActivity.this,NewsActivity.class);
                     startActivity(intent4);
+                    break;
+                case R.id.contanctButton:
+                    Intent intent5 = new Intent(MainActivity.this, ContanctActivity.class);
+                    startActivity(intent5);
                     break;
                 default:break;
             }
