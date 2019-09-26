@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">FirstService</string>
     <string name="title">ServiceTest</string>
+    <string name="forceInfo">你被强制下线，请重新登录</string>
 </resources>
