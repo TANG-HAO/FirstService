@@ -9,6 +9,7 @@ public class ImageData extends DataSupport {
     private String imagePath;
     private Date date;
 
+
     public ImageData(String imagePath, Date date) {
         this.imagePath = imagePath;
         this.date = date;

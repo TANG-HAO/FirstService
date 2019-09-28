@@ -46,9 +46,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 
+import com.baidu.mapapi.map.MapView;
 import com.example.firstservice.R;
 import com.example.firstservice.activity.contanctActivity.ContanctActivity;
 import com.example.firstservice.activity.rightmenu_activity.PersonActivity;
@@ -96,11 +98,14 @@ public class MainActivity extends BaseActivity1 implements View.OnLongClickListe
     private CircleImageView picture;
     private String imagePath;
     private Uri uri;
+    private MapView mMapView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
         //getActionBar().hide();
         //replaceFragment(new MianFragment());
         LitePal.getDatabase();
@@ -164,7 +169,7 @@ public class MainActivity extends BaseActivity1 implements View.OnLongClickListe
         View header = navigationView.inflateHeaderView(R.layout.nav_header);
         picture = (CircleImageView) header.findViewById(R.id.icon_image);
         readImagePathByLitePal();
-
+        //greateImageView();
     }
 
     @Override
@@ -227,6 +232,16 @@ public class MainActivity extends BaseActivity1 implements View.OnLongClickListe
             case R.id.nav_friends:
                 Intent intent1 = new Intent(this, PersonActivity.class);
                 startActivity(intent1);
+                break;
+            case R.id.nav_call://调用联系人
+                Runnable myRunable = new Runnable() {
+                    @Override
+                    public void run() {
+                        //startOtherApplication("com.example.contactlisttest");
+                        startOtherApplicationActivity("com.example.contactlisttest","MainActivity");
+                    }
+                };
+                new Thread(myRunable).start();
                 break;
         }
         return false;
@@ -521,11 +536,9 @@ public class MainActivity extends BaseActivity1 implements View.OnLongClickListe
      * 将图片从文件中读取出来
      */
     public void readImagePathByLitePal() {
-        List<ImageData> impagePaths = DataSupport.select("imagePath","date").find(ImageData.class);
-        for (ImageData imageData:impagePaths){
-            Log.d(TAG)
-        }
-        Log.d(TAG, impagePaths.size() + "==========="+impagePaths.get(0).getDate().toString());
+        List<ImageData> impagePaths = DataSupport.select("imagePath").find(ImageData.class);
+
+        //Log.d(TAG, impagePaths.size() + "==========="+impagePaths.get(0).getDate().toString());
         if (impagePaths.size() == 0) {
             picture.setImageResource(R.drawable.ic_bubble_chart_black_24dp);
         } else {
@@ -534,5 +547,41 @@ public class MainActivity extends BaseActivity1 implements View.OnLongClickListe
         }
     }
 
+    /**
+     * 根据包名调用其他程序
+     *
+     * @param appPackageName
+     */
+    public void startOtherApplication(String appPackageName) {
+
+        try {
+            Intent intent = getPackageManager().getLaunchIntentForPackage(appPackageName);
+            startActivity(intent);
+        } catch (Exception e) {
+            Toast.makeText(this, "未装该应用", Toast.LENGTH_SHORT).show();
+        } finally {
+
+        }
+    }
+
+
+    /**
+     * uri启动，需要在启动的app的配置文件中添加schema android  app
+     *  @param packageName
+     * @param className
+     */
+
+    public void startOtherApplicationActivity(String packageName, String className) {
+        Uri uri = Uri.parse("android://app");
+        Intent intent = new Intent(Intent.ACTION_VIEW,uri);
+        startActivity(intent);
+    }
+
+    public void greateImageView(){
+        ImageView imageView = new ImageView(this);
+        imageView.setImageResource(R.drawable.center_direction);
+        imageView.setX(20);
+        imageView.setY(20);
+    }
 
 }
