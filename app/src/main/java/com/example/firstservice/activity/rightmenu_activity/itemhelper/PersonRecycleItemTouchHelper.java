@@ -195,6 +195,8 @@ public class PersonRecycleItemTouchHelper extends ItemTouchHelper.Callback {
                 //绘制时需调用平移动画，否则滑动看不到反馈
                 itemView.setTranslationX(dX);
             }
+            float alpha = 1.0f - Math.abs(dX) / (float) itemView.getWidth();
+            itemView.setAlpha(alpha);
         }else {
             //拖动时有系统自己完成
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
