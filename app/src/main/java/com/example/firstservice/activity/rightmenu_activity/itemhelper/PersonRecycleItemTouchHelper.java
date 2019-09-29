@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.util.Log;
 import android.view.View;
@@ -141,7 +142,7 @@ public class PersonRecycleItemTouchHelper extends ItemTouchHelper.Callback {
             if(dX>0){
                 //根据滑动实时绘制一个背景
                 c.drawRect(itemView.getLeft(),itemTop,drawWidth,itemView.getBottom(),paint);
-                paint.setAntiAlias(true);
+               // new Path().moveTo(itemView.getRight(),itemView.getBottom()-itemView.getWidth());
                 //在背景上面绘制图片
                 if (x>padding){//滑动距离大于padding时开始绘制图片
                     //指定图片绘制的位置
@@ -149,11 +150,12 @@ public class PersonRecycleItemTouchHelper extends ItemTouchHelper.Callback {
                     rect.left=itemView.getLeft()+padding;
                     rect.top=itemTop+(itemView.getBottom()-itemTop-bitmap.getHeight())/2;//图片居中
                     int maxRight=rect.left+bitmap.getWidth();
-                    rect.right=Math.min(x,maxRight);
+
+                    rect.right=Math.min(itemView.getLeft()+x,maxRight);
                     rect.bottom=rect.top+bitmap.getHeight();
                     //指定图片的绘制区域
                     Rect rect1=null;
-                    if (x<maxRight){
+                    if (x<maxRight-itemView.getLeft()){
                         rect1=new Rect();//不能再外面初始化，否则dx大于画图区域时，删除图片不显示
                         rect1.left=0;
                         rect1.top = 0;
@@ -173,14 +175,15 @@ public class PersonRecycleItemTouchHelper extends ItemTouchHelper.Callback {
                 if (x>padding){//滑动距离大于padding时开始绘制图片
                     //指定图片绘制的位置
                     Rect rect=new Rect();//画图的位置
+
                     rect.right=itemView.getRight()-padding;
                     rect.top=itemTop+(itemView.getBottom()-itemTop-bitmap.getHeight())/2;//图片居中
                     int minLeft=rect.right-bitmap.getWidth();
-                    rect.left=Math.min(x,minLeft);
+                    rect.left=Math.min(itemView.getRight()+x,minLeft);
                     rect.bottom=rect.top+bitmap.getHeight();
                     //指定图片的绘制区域
                     Rect rect1=null;
-                    if (x>minLeft){
+                    if (x<bitmap.getWidth()+2*padding){
                         rect1=new Rect();//不能再外面初始化，否则dx大于画图区域时，删除图片不显示
                         rect1.left=0;
                         rect1.top = 0;
