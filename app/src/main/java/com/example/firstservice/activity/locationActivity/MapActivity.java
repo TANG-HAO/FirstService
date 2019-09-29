@@ -4,8 +4,11 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,7 +41,8 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapActivity extends AppCompatActivity {
+public class MapActivity extends AppCompatActivity implements View.OnClickListener {
+    private static final String TAG = "MapActivity";
     private MapView mMapView;
     List<String> permissionList = new ArrayList<String>();
     public LocationClient mlocationClient;
@@ -55,6 +59,9 @@ public class MapActivity extends AppCompatActivity {
     private MyOrientationListener myOrientationListener;//指南针
     private BitmapDescriptor bitmapDescriptor;
     private float mLastX;//传感器传过来的值
+    private ImageView reLocationImage;
+    private BDLocation location;//传值需要
+    private LatLng latLng;
 
 
     @Override
@@ -79,11 +86,12 @@ public class MapActivity extends AppCompatActivity {
         baidumap = mMapView.getMap();//在地图中地位到自己的地址
         baidumap.setMyLocationEnabled(true);//开启地图的定位图层
         //baidumap.setMapType(BaiduMap.MAP_TYPE_SATELLITE);//地图类型
+
         //实例化UiSettings类对象
         mUiSettings = baidumap.getUiSettings();
 //通过设置enable为true或false 选择是否显示指南针
         mUiSettings.setCompassEnabled(isenabled);
-        baidumap.setCompassPosition(new Point(60, 60));
+        baidumap.setCompassPosition(new Point(120, 600));
 
         jingduText = (TextView) findViewById(R.id.jingdu);
         weiduText = (TextView) findViewById(R.id.weidu);
@@ -91,10 +99,11 @@ public class MapActivity extends AppCompatActivity {
         countryText = (TextView) findViewById(R.id.locat_country);
         provinceText = (TextView) findViewById(R.id.locat_province);
         cityText = (TextView) findViewById(R.id.locat_city);
+        reLocationImage = (ImageView) findViewById(R.id.relocation);
         //requestLocation();
         //检查权限
         checkPermission();
-
+        onclick();
 
 
     }
@@ -183,7 +192,7 @@ public class MapActivity extends AppCompatActivity {
     private void requestLocation() {
         initLocation();//实时获取
         initMyOrien();
-        if(!mlocationClient.isStarted()){
+        if (!mlocationClient.isStarted()) {
             mlocationClient.start();
             //开启方向传感器
             myOrientationListener.star();
@@ -203,6 +212,24 @@ public class MapActivity extends AppCompatActivity {
         locationClientOption.setCoorType("bd09ll");//定位准确
         locationClientOption.setNeedDeviceDirect(true);//需要设备方向
         mlocationClient.setLocOption(locationClientOption);
+    }
+
+    /**
+     * 重写事件监听 点击触发
+     *
+     * @param view
+     */
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.relocation:
+                Log.d(TAG, "重新定位");
+                //把定位点再次显现出来
+                MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.newLatLng(latLng);
+                baidumap.animateMapStatus(mapStatusUpdate);
+                break;
+
+        }
     }
 
     /**
@@ -226,14 +253,18 @@ public class MapActivity extends AppCompatActivity {
                     if (bdLocation.getLocType() == BDLocation.TypeGpsLocation) {
                         locateModeText.setText("GPS定位");
                         navigateTo(bdLocation);
+
                     } else if (bdLocation.getLocType() == BDLocation.TypeNetWorkLocation) {
                         locateModeText.setText("网络定位");
                         navigateTo(bdLocation);
+
                     }
 //配置定位图层显示方式，使用自己的定位图标
 // LocationMode定位模式有三种：普通模式，跟随模式，罗盘模式，在这使用普通模式
-                    MyLocationConfiguration configuration = new MyLocationConfiguration(MyLocationConfiguration.LocationMode.NORMAL, true, bitmapDescriptor);
+                    MyLocationConfiguration configuration = new MyLocationConfiguration(MyLocationConfiguration.LocationMode.NORMAL, true, bitmapDescriptor,0xAAFFFF88,0xAA00FF00);
+
                     baidumap.setMyLocationConfigeration(configuration);
+
                 }
             });
         }
@@ -246,7 +277,7 @@ public class MapActivity extends AppCompatActivity {
      */
     private void navigateTo(BDLocation bdLocation) {
         if (isFirstLocate) {
-            LatLng latLng = new LatLng(bdLocation.getLatitude(), bdLocation.getLongitude());
+            latLng = new LatLng(bdLocation.getLatitude(), bdLocation.getLongitude());
             MapStatusUpdate statusUpdate = MapStatusUpdateFactory.newLatLng(latLng);
             baidumap.animateMapStatus(statusUpdate);
             statusUpdate = MapStatusUpdateFactory.zoomTo(16f);
@@ -276,7 +307,7 @@ public class MapActivity extends AppCompatActivity {
      */
     private void initMyOrien() {
         //初始化图标
-        bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.northdirection);
+        // bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.northdirection);
         //方向传感器
         myOrientationListener = new MyOrientationListener(this);
 
@@ -286,6 +317,14 @@ public class MapActivity extends AppCompatActivity {
                 mLastX = x;
             }
         });
+    }
+
+    public void  setCompassMode(){
+       // baidumap.setMyLocationConfiguration(new MyLocationConfiguration());
+    }
+
+    public void onclick() {
+        reLocationImage.setOnClickListener(this);
     }
 
 

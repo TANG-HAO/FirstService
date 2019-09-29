@@ -53,10 +53,12 @@ import android.widget.Toast;
 import com.baidu.mapapi.map.MapView;
 import com.example.firstservice.R;
 import com.example.firstservice.activity.contanctActivity.ContanctActivity;
+import com.example.firstservice.activity.locationActivity.MapActivity;
 import com.example.firstservice.activity.rightmenu_activity.PersonActivity;
 import com.example.firstservice.base.BaseActivity1;
 import com.example.firstservice.bean.ImageData;
 import com.example.firstservice.fragment.MianFragment;
+import com.example.firstservice.mail.MailActivity;
 import com.example.firstservice.service.DownloadService;
 import com.example.firstservice.service.MyIntentService;
 import com.example.firstservice.service.Myservice;
@@ -238,13 +240,22 @@ public class MainActivity extends BaseActivity1 implements View.OnLongClickListe
                     @Override
                     public void run() {
                         //startOtherApplication("com.example.contactlisttest");
-                        startOtherApplicationActivity("com.example.contactlisttest","MainActivity");
+                        startOtherApplication("com.example.contactlisttest");
                     }
                 };
                 new Thread(myRunable).start();
                 break;
+            case R.id.nav_location:
+                Intent intent2 = new Intent(this, MapActivity.class);
+                startActivity(intent2);
+                break;
+            case R.id.nav_mail:
+                Intent intent3 = new Intent(MainActivity.this, MailActivity.class);
+                Log.d(TAG, "正在进入网页");
+                startActivity(intent3);
+                break;
         }
-        return false;
+        return true;
     }
 
     private void openAlbum() {
@@ -567,17 +578,18 @@ public class MainActivity extends BaseActivity1 implements View.OnLongClickListe
 
     /**
      * uri启动，需要在启动的app的配置文件中添加schema android  app
-     *  @param packageName
+     *
+     * @param packageName
      * @param className
      */
 
     public void startOtherApplicationActivity(String packageName, String className) {
         Uri uri = Uri.parse("android://app");
-        Intent intent = new Intent(Intent.ACTION_VIEW,uri);
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         startActivity(intent);
     }
 
-    public void greateImageView(){
+    public void greateImageView() {
         ImageView imageView = new ImageView(this);
         imageView.setImageResource(R.drawable.center_direction);
         imageView.setX(20);

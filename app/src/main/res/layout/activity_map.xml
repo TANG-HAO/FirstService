@@ -23,20 +23,22 @@
                 android:fitsSystemWindows="true" />
 
             <ImageView
-                android:id="@+id/sa_location"
+                android:id="@+id/relocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentBottom="true"
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/center_direction"
 
-                android:layout_margin="10dp"
-                android:src="@drawable/center_direction" />
+                android:layout_marginBottom="40dp"/>
         </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="visible">
 
             <LinearLayout
                 android:layout_width="match_parent"

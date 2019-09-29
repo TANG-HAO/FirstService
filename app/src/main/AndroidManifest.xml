@@ -21,13 +21,14 @@
 
     <application
 
-        android:name="org.litepal.LitePalApplication"
+        android:name="com.example.firstservice.application.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppThemeLightNoActionBar">
+        android:theme="@style/AppThemeLightNoActionBar"
+        android:usesCleartextTraffic="true">
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="NlFb2F7xb923kCi5DLyltW24scfLpyG7" />
@@ -36,7 +37,10 @@
             android:exported="true"
             android:label="Hello"
             android:theme="@style/AppThemeNoActionBar">
-
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <service android:name=".service.Myservice"></service>
@@ -66,13 +70,15 @@
 
         </activity>
         <activity android:name=".activity.rightmenu_activity.PersonActivity" />
+        <activity android:name=".mail.MailActivity"
+            >
+
+        </activity>
+
         <activity android:name=".activity.locationActivity.MapActivity"
-            android:hardwareAccelerated="true"
+
             android:theme="@style/mapActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+
         </activity>
 
         <service
@@ -84,6 +90,7 @@
                 <action android:name="com.baidu.location.service_v2.4"></action>
             </intent-filter>
         </service>
+
 
     </application>
 

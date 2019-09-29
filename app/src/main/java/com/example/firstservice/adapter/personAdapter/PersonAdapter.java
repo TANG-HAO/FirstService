@@ -15,13 +15,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.firstservice.R;
+import com.example.firstservice.activity.rightmenu_activity.itemhelper.PersonRecycleItemTouchHelper;
 import com.example.firstservice.bean.MyPerson;
 
+import java.util.Collections;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder> {
+public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder> implements PersonRecycleItemTouchHelper.ItemTouchHelperCallback {
     private List<MyPerson> mlist;
     private static final String TAG = "PersonAdapter";
     private Context mcontext;
@@ -59,6 +61,19 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
         return mlist.size();
     }
 
+    @Override
+    public void onMove(int currentPosition, int targetPosition) {
+        Collections.swap(mlist,currentPosition,targetPosition);
+        notifyItemMoved(currentPosition,targetPosition);
+    }
+
+    @Override
+    public void onItemDelete(int currentPosition) {
+        mlist.remove(currentPosition);
+        notifyItemRemoved(currentPosition);
+    }
+
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         private CardView personCard;
         private ImageView personImage;
@@ -70,4 +85,5 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
             personText=(TextView)itemView.findViewById(R.id.person_info);
         }
     }
+
 }
