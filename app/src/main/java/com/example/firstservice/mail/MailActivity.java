@@ -37,22 +37,18 @@ public class MailActivity extends AppCompatActivity {
     private WebSettings mWebSettings;
 
 
+
+
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
-        Log.d(TAG, "网页");
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_mail);
         webView = (WebView) findViewById(R.id.mail_web_view);
         mWebSettings = webView.getSettings();
-        //webView.setScrollBarStyle(0);
-        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setJavaScriptEnabled(isenabled);
         webView.setWebViewClient(new WebViewClient());
-        webView.loadUrl("https://www.baidu.com/");
-
-
-
-
-
+        webView.loadUrl("http://mail.hoperun.com/");
     }
 
     @Override

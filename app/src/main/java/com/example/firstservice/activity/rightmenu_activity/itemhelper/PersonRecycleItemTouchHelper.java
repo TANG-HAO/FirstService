@@ -134,14 +134,14 @@ public class PersonRecycleItemTouchHelper extends ItemTouchHelper.Callback {
             int padding =10;//图片绘制的padding
             int maxDrawWidth=2*padding+bitmap.getWidth();//最大的绘制宽度
             Paint paint=new Paint();
-            paint.setColor(resources.getColor(android.R.color.white));
+            paint.setColor(resources.getColor(android.R.color.holo_red_light));
             int x=Math.round(Math.abs(dX));
             int drawWidth=Math.min(x,maxDrawWidth);//实际的绘制宽度，取实时滑动距离x和最大绘制距离maxDrawWidth最小值
             int itemTop=itemView.getBottom()-itemView.getHeight();//绘制的top位置
             //向右滑动
             if(dX>0){
                 //根据滑动实时绘制一个背景
-                c.drawRect(itemView.getLeft(),itemTop,drawWidth,itemView.getBottom(),paint);
+                c.drawRect(itemView.getLeft(),itemTop,drawWidth+itemView.getLeft(),itemView.getBottom(),paint);
                // new Path().moveTo(itemView.getRight(),itemView.getBottom()-itemView.getWidth());
                 //在背景上面绘制图片
                 if (x>padding){//滑动距离大于padding时开始绘制图片
@@ -162,15 +162,20 @@ public class PersonRecycleItemTouchHelper extends ItemTouchHelper.Callback {
                         rect1.bottom=bitmap.getHeight();
                         rect1.right=x-padding;
                     }
+
                     c.drawBitmap(bitmap,rect1,rect,paint);
                 }
                 //绘制时需调用平移动画，否则滑动看不到反馈
                 itemView.setTranslationX(dX);
-            }else {
+            }else if(dX<0) {
                 //如果在getMovementFlags指定了向左滑动（ItemTouchHelper。START）时则绘制工作可参考向右的滑动绘制，也可直接使用下面语句交友系统自己处理
                 //super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
                 //根据滑动实时绘制一个背景
-                c.drawRect(itemView.getLeft(),itemTop,drawWidth,itemView.getBottom(),paint);
+                int left=itemView.getRight()-drawWidth;//背景绘制的区域的左边，即从屏幕左边到绘制区域左边的距离
+                int top=itemTop;//背景绘制的区域的上边，即从屏幕上边到绘制区域上边的距离
+                int right=itemView.getRight();//背景绘制的区域的右边，即从屏幕左边到绘制区域左边的距离
+                int bottom=itemView.getBottom();////背景绘制的区域的下边，即从屏幕上边到绘制区域下边的距离
+                c.drawRect(left,top,right,bottom,paint);
                 //在背景上面绘制图片
                 if (x>padding){//滑动距离大于padding时开始绘制图片
                     //指定图片绘制的位置
@@ -197,6 +202,8 @@ public class PersonRecycleItemTouchHelper extends ItemTouchHelper.Callback {
             }
             float alpha = 1.0f - Math.abs(dX) / (float) itemView.getWidth();
             itemView.setAlpha(alpha);
+
+
         }else {
             //拖动时有系统自己完成
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);

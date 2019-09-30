@@ -1,20 +1,5 @@
 package com.example.firstservice.activity;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.annotation.RequiresPermission;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
@@ -28,7 +13,6 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
@@ -39,9 +23,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import android.text.Layout;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -49,6 +31,18 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.baidu.mapapi.map.MapView;
 import com.example.firstservice.R;
@@ -57,46 +51,30 @@ import com.example.firstservice.activity.locationActivity.MapActivity;
 import com.example.firstservice.activity.rightmenu_activity.PersonActivity;
 import com.example.firstservice.base.BaseActivity1;
 import com.example.firstservice.bean.ImageData;
-import com.example.firstservice.fragment.MianFragment;
-import com.example.firstservice.fragment.activitycahngefragmnet.HomeFragement;
-import com.example.firstservice.fragment.activitycahngefragmnet.MenuFragment;
 import com.example.firstservice.mail.MailActivity;
 import com.example.firstservice.service.DownloadService;
 import com.example.firstservice.service.MyIntentService;
 import com.example.firstservice.service.Myservice;
 import com.example.firstservice.utils.TimeChange;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
 import org.litepal.LitePal;
 import org.litepal.crud.DataSupport;
 
-import java.io.File;
-import java.sql.Date;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class MainActivity extends BaseActivity1 implements View.OnLongClickListener, NavigationView.OnNavigationItemSelectedListener, BottomNavigationView.OnNavigationItemSelectedListener {
+public class MainActivity_tem extends BaseActivity1 implements View.OnLongClickListener, NavigationView.OnNavigationItemSelectedListener {
     private static final int CHOOSE_PHOTO = 2;
     private static final int REQUEST_SMALL_IMAGE_CUTTING = 1;
     private static final int AFTER_CROP = 3;
     private static final String HEAD = "head";//存贮头像的文件名
     private static final String IMPAGEPATH = "imagePath";
     private Toolbar toolbar;
-    private Button bindButton;
-    private Button unbindButton;
-    private Button startIntentServiceButton;
-    private Button startDownloadButton;
-    private Button pauseDownloadButton;
-    private Button cancleDownloadButton;
-    private Button recycleViewButton;
-    private DownloadService.DownloadBinder downloadBinder;
-    private Button fragmentButton;
-    private static final String TAG = MainActivity.class.getName();
-    private Button newsButton;
-    private Button contanctButton;
+    private static final String TAG = MainActivity_tem.class.getName();
+
     private NetWorkChangeReceiver netWorkChangeReceiver;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
@@ -104,22 +82,18 @@ public class MainActivity extends BaseActivity1 implements View.OnLongClickListe
     private String imagePath;
     private Uri uri;
     private MapView mMapView;
-    private BottomNavigationView bottomNavigationView;
-
-    private HomeFragement homeFragement;
-    private FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_tem);
 
-        homeFragement=new HomeFragement();
 
         //getActionBar().hide();
         //replaceFragment(new MianFragment());
         LitePal.getDatabase();
-
+        initView();
+        initOnClick();
 
         //监听网络变化
         IntentFilter intentFilter = new IntentFilter();
@@ -127,50 +101,19 @@ public class MainActivity extends BaseActivity1 implements View.OnLongClickListe
         netWorkChangeReceiver = new NetWorkChangeReceiver();
         registerReceiver(netWorkChangeReceiver, intentFilter);
 
-        Intent intent = new Intent(this, DownloadService.class);
-        startService(intent);
-        bindService(intent, connection, BIND_AUTO_CREATE);
-        if ((ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) !=
+
+        if ((ContextCompat.checkSelfPermission(MainActivity_tem.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) !=
                 PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+            ActivityCompat.requestPermissions(MainActivity_tem.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
         }
 
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        initView();
-        initOnClick();
-    }
-
-    private void replaceFragment(Fragment fragement) {
-        fragmentManager=getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.framgment_container,fragement);
-        transaction.commit();
-    }
-
     private void initOnClick() {
-
-        bindButton.setOnClickListener(new onBindClick());
-        unbindButton.setOnClickListener(new onBindClick());
-        startIntentServiceButton.setOnClickListener(new onBindClick());
-        startDownloadButton.setOnClickListener(new onBindClick());
-        pauseDownloadButton.setOnClickListener(new onBindClick());
-        cancleDownloadButton.setOnClickListener(new onBindClick());
-        recycleViewButton.setOnClickListener(new onBindClick());
-        fragmentButton.setOnLongClickListener(this);
-        newsButton.setOnClickListener(new onBindClick());
-        contanctButton.setOnClickListener(new onBindClick());
-
         //侧滑菜单监听
         navigationView.setCheckedItem(R.id.nav_forceoffline);
         navigationView.setNavigationItemSelectedListener(this);
         picture.setOnClickListener(new onBindClick());
-
-        bottomNavigationView.setOnNavigationItemSelectedListener(this);
-
     }
 
 
@@ -181,21 +124,6 @@ public class MainActivity extends BaseActivity1 implements View.OnLongClickListe
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
         }
-
-
-
-        bindButton = (Button) homeFragement.getView().findViewById(R.id.bindButton);
-        unbindButton = (Button) findViewById(R.id.unbindButton);
-        startIntentServiceButton = (Button) findViewById(R.id.intent_button);
-        startDownloadButton = (Button) findViewById(R.id.start_download);
-        pauseDownloadButton = (Button) findViewById(R.id.pause_download);
-        cancleDownloadButton = (Button) findViewById(R.id.cancle_download);
-        recycleViewButton = (Button) findViewById(R.id.to_recycle_view);
-        fragmentButton = (Button) findViewById(R.id.fragmentButton);
-        newsButton = (Button) findViewById(R.id.news_button);
-        contanctButton = (Button) findViewById(R.id.contanctButton);
-        bottomNavigationView=(BottomNavigationView)findViewById(R.id.bottom_navigation);
-
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -210,17 +138,15 @@ public class MainActivity extends BaseActivity1 implements View.OnLongClickListe
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_start:
-                Intent intent = new Intent(MainActivity.this, Myservice.class);
+                Intent intent = new Intent(MainActivity_tem.this, Myservice.class);
                 startService(intent);
                 break;
             case R.id.menu_close:
-                Intent intent1 = new Intent(MainActivity.this, Myservice.class);
+                Intent intent1 = new Intent(MainActivity_tem.this, Myservice.class);
                 stopService(intent1);
             case android.R.id.home:
                 drawerLayout.openDrawer(GravityCompat.START);
                 break;
-
-                default:
         }
         return true;
     }
@@ -232,23 +158,13 @@ public class MainActivity extends BaseActivity1 implements View.OnLongClickListe
         return true;
     }
 
-    private ServiceConnection connection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-            downloadBinder = (DownloadService.DownloadBinder) iBinder;
-        }
 
-        @Override
-        public void onServiceDisconnected(ComponentName componentName) {
-            Log.d(TAG, "disconnect excuted");
-        }
-    };
 
     @Override
     public boolean onLongClick(View view) {
         switch (view.getId()) {
             case R.id.fragmentButton:
-                Intent intent = new Intent(MainActivity.this, FragmentsActivity.class);
+                Intent intent = new Intent(MainActivity_tem.this, FragmentsActivity.class);
                 startActivity(intent);
                 break;
             default:
@@ -284,19 +200,10 @@ public class MainActivity extends BaseActivity1 implements View.OnLongClickListe
                 startActivity(intent2);
                 break;
             case R.id.nav_mail:
-                Intent intent3 = new Intent(MainActivity.this, MailActivity.class);
+                Intent intent3 = new Intent(MainActivity_tem.this, MailActivity.class);
                 Log.d(TAG, "正在进入网页");
                 startActivity(intent3);
                 break;
-            case R.id.home:
-                replaceFragment(new HomeFragement());
-                break;
-            case R.id.menu:
-                replaceFragment(new MenuFragment());
-                break;
-//            case R.id.my:
-//                replaceFragment(new MyFragement());
-//                break;
         }
         return true;
     }
@@ -308,7 +215,7 @@ public class MainActivity extends BaseActivity1 implements View.OnLongClickListe
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivityForResult(intent, CHOOSE_PHOTO);
         } else {
-            Toast.makeText(MainActivity.this, "未找到图片查看器", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity_tem.this, "未找到图片查看器", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -317,59 +224,24 @@ public class MainActivity extends BaseActivity1 implements View.OnLongClickListe
         @Override
         public void onClick(View view) {
             switch (view.getId()) {
-                case R.id.bindButton:
-                    Intent bindintent = new Intent(MainActivity.this, Myservice.class);
-                    bindService(bindintent, connection, BIND_AUTO_CREATE);
-                    break;
-                case R.id.unbindButton:
-                    Intent intent1 = new Intent(MainActivity.this, Myservice.class);
-                    unbindService(connection);
-                    break;
-                case R.id.intent_button:
-                    Log.d(TAG, "Thread id is" + Thread.currentThread().getId());
-                    Intent intent2 = new Intent(MainActivity.this, MyIntentService.class);
-                    startService(intent2);
-                    break;
-                case R.id.start_download:
-                    String url = "https://dl.google.com/dl/android/studio/install/3.5.0.21/android-studio-ide-191.5791312-windows.exe";
-                    downloadBinder.startDownload(url);
-                    break;
-                case R.id.pause_download:
 
-                    downloadBinder.pauseDownload();
-                    break;
-                case R.id.cancle_download:
-                    downloadBinder.cancelDownload();
-                    break;
-                case R.id.to_recycle_view:
-                    Intent intent = new Intent(MainActivity.this, ReclyViewActivity.class);
-                    startActivity(intent);
-                    break;
-                case R.id.news_button:
-                    Intent intent4 = new Intent(MainActivity.this, NewsActivity.class);
-                    startActivity(intent4);
-                    break;
-                case R.id.contanctButton:
-                    Intent intent5 = new Intent(MainActivity.this, ContanctActivity.class);
-                    startActivity(intent5);
-                    break;
                 case R.id.icon_image:
-                    if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
+                    if (ContextCompat.checkSelfPermission(MainActivity_tem.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(MainActivity_tem.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
                     } else {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity_tem.this);
                         builder.setItems(R.array.items, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 switch (i) {
                                     case 0:
                                         cropPhoto();//直接拍照
-                                        Toast.makeText(MainActivity.this, "裁剪", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(MainActivity_tem.this, "裁剪", Toast.LENGTH_SHORT).show();
                                         break;
                                     case 1:
                                         openAlbum();//直接在选择图片好后返回到一个activity对图片进行裁剪
 
-                                        Toast.makeText(MainActivity.this, "请选择图片", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(MainActivity_tem.this, "请选择图片", Toast.LENGTH_SHORT).show();
                                         break;
                                 }
                             }
@@ -434,7 +306,7 @@ public class MainActivity extends BaseActivity1 implements View.OnLongClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbindService(connection);
+        //unbindService(connection);
         unregisterReceiver(netWorkChangeReceiver);
     }
 
@@ -638,7 +510,5 @@ public class MainActivity extends BaseActivity1 implements View.OnLongClickListe
         imageView.setX(20);
         imageView.setY(20);
     }
-
-
 
 }

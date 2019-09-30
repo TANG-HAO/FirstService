@@ -3,6 +3,7 @@ package com.example.firstservice.activity.rightmenu_activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -93,9 +94,12 @@ public class PersonActivity extends BaseActivity1 {
                         adapter.notifyDataSetChanged();
                         //adapter.notifyDataSetChanged();
                         swipeRefreshLayout.setRefreshing(false);
+                        Toast.makeText(PersonActivity.this, "刷新成功", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
         }).start();
     }
+
+
 }

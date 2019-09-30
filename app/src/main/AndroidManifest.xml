@@ -36,7 +36,7 @@
             android:name=".activity.MainActivity"
             android:exported="true"
             android:label="Hello"
-            android:theme="@style/AppThemeNoActionBar">
+            android:theme="@style/AppThemeLightNoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
