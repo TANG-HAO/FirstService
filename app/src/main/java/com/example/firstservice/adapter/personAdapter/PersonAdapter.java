@@ -50,7 +50,7 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {//绑定数据，
         MyPerson person = mlist.get(position);
         holder.personText.setText(person.getPersoName());
         Glide.with(mcontext).load(person.getPersonImageId()).into(holder.personImage);
@@ -62,19 +62,19 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
     }
 
     @Override
-    public void onMove(int currentPosition, int targetPosition) {
+    public void onMove(int currentPosition, int targetPosition) {//移动列表项，并刷新
         Collections.swap(mlist,currentPosition,targetPosition);
         notifyItemMoved(currentPosition,targetPosition);
     }
 
     @Override
-    public void onItemDelete(int currentPosition) {
+    public void onItemDelete(int currentPosition) {//移除列表项并刷新
         mlist.remove(currentPosition);
         notifyItemRemoved(currentPosition);
     }
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {//声明viewholder中的控件，并实例化
         private CardView personCard;
         private ImageView personImage;
         private TextView personText;

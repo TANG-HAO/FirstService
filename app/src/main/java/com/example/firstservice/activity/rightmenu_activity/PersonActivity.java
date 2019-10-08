@@ -66,7 +66,7 @@ public class PersonActivity extends BaseActivity1 {
         }
         return  mlist;
     }
-    public void showSwipRefresh(){
+    public void showSwipRefresh(){//列表刷新动画
         swipeRefreshLayout=(SwipeRefreshLayout)findViewById(R.id.swip_refresh);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -74,10 +74,10 @@ public class PersonActivity extends BaseActivity1 {
             public void onRefresh() {
                 refreshPerson();
             }
-        });
+        });//绑定刷新事件
     }
 
-    private void refreshPerson() {
+    private void refreshPerson() {//刷新事件，刷新列表数据，但是要在主线程中进行，耗时的要在新的线程中进行
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -89,7 +89,7 @@ public class PersonActivity extends BaseActivity1 {
                 }
                 runOnUiThread(new Runnable() {
                     @Override
-                    public void run() {
+                    public void run() {//采用runOnUiThread方法解决矛盾
                         mlist=createList();//列表数据的刷新
                         adapter.notifyDataSetChanged();
                         //adapter.notifyDataSetChanged();

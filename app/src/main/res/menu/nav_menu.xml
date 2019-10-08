@@ -22,5 +22,8 @@
         <item android:title="foreoffline"
             android:icon="@drawable/ic_error_outline_black_24dp"
             android:id="@+id/nav_forceoffline"/>
+        <item android:title="others"
+            android:id="@+id/nav_others"
+            android:icon="@drawable/ic_devices_other_black_24dp"/>
     </group>
 </menu>
