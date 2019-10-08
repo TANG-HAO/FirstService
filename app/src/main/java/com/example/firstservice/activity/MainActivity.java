@@ -115,7 +115,7 @@ public class MainActivity extends BaseActivity1 implements View.OnLongClickListe
         setContentView(R.layout.activity_main_tem);
 
         homeFragement=new HomeFragement();
-
+        initView();
         //getActionBar().hide();
         //replaceFragment(new MianFragment());
         LitePal.getDatabase();
@@ -140,7 +140,7 @@ public class MainActivity extends BaseActivity1 implements View.OnLongClickListe
     @Override
     protected void onStart() {
         super.onStart();
-        initView();
+
         initOnClick();
     }
 
@@ -184,7 +184,7 @@ public class MainActivity extends BaseActivity1 implements View.OnLongClickListe
 
 
 
-        bindButton = (Button) homeFragement.getView().findViewById(R.id.bindButton);
+        bindButton = (Button) findViewById(R.id.bindButton);
         unbindButton = (Button) findViewById(R.id.unbindButton);
         startIntentServiceButton = (Button) findViewById(R.id.intent_button);
         startDownloadButton = (Button) findViewById(R.id.start_download);
@@ -288,12 +288,15 @@ public class MainActivity extends BaseActivity1 implements View.OnLongClickListe
                 Log.d(TAG, "正在进入网页");
                 startActivity(intent3);
                 break;
-            case R.id.home:
-                replaceFragment(new HomeFragement());
-                break;
-            case R.id.menu:
-                replaceFragment(new MenuFragment());
-                break;
+            case R.id.nav_others1:
+                Intent intent4 = new Intent(this, com.example.firstservice.activity.fragmentsActivity.FragmentsActivity.class);
+                startActivity(intent4);
+//            case R.id.home:
+//                replaceFragment(new HomeFragement());
+//                break;
+//            case R.id.menu:
+//                replaceFragment(new MenuFragment());
+//                break;
 //            case R.id.my:
 //                replaceFragment(new MyFragement());
 //                break;

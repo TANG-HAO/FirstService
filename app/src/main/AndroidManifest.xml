@@ -91,7 +91,7 @@
             </intent-filter>
         </service>
 
-
+    <activity android:name=".activity.fragmentsActivity.FragmentsActivity"/>
     </application>
 
 

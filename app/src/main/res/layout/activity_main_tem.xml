@@ -32,7 +32,10 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
-
+            <fragment
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:name="com.example.firstservice.fragment.activitycahngefragmnet.MenuFragment"/>
         </LinearLayout>
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_navigation"
@@ -44,6 +47,7 @@
             app:itemTextColor="@drawable/bottom_navigation_colors"
             app:menu="@menu/bottom_navigation_menu" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
     <com.google.android.material.navigation.NavigationView
         android:layout_width="300dp"
 
