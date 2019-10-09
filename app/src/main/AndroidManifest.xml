@@ -92,6 +92,7 @@
         </service>
 
     <activity android:name=".activity.fragmentsActivity.FragmentsActivity"/>
+    <activity android:name=".activity.rightmenu_activity.PersonActivity_tem"/>
     </application>
 
 
