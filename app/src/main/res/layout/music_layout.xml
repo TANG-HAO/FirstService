@@ -2,20 +2,45 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="50dp"
-    android:paddingRight="20dp"
-    >
-    <de.hdodenhof.circleimageview.CircleImageView
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingRight="20dp">
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:id="@+id/music_image"/>
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:text="null"
+        android:layout_centerVertical="true"
+        android:id="@+id/song_title"/>
+
+    <com.example.firstservice.widget.SimpleRoundProgress
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_toLeftOf="@id/stop_button"
         android:layout_marginRight="10dp"
         android:background="@drawable/ic_stop_black_24dp"
-        android:id="@+id/music_progressbar"/>
+
+        android:visibility="gone"
+        android:layout_centerVertical="true"/>
+    <com.example.firstservice.widget.SimpleRoundProgress
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center"
+        app:srp_max="100"
+        app:srp_progressColor="#f00"
+        app:srp_roundColor="#f1f1f1"
+        app:srp_roundWidth="3dip"
+        app:srp_startAngle="0"
+        app:srp_style="STROKE"
+        android:layout_toLeftOf="@id/stop_button"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/ic_play_arrow_black_24dp"
+        android:id="@+id/music_progressbar"
+        android:visibility="visible"
+        android:layout_centerVertical="true"/>
+
+
+
+
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -27,7 +52,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toLeftOf="@id/menu_button"
-        android:background="@drawable/ic_stop_black_24dp"
+        android:background="@drawable/ic_play_arrow_black_24dp"
         android:id="@+id/stop_button"
         android:layout_marginRight="10dp"
         android:layout_centerVertical="true"/>

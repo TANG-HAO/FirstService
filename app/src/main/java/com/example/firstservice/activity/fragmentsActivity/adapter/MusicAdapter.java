@@ -2,6 +2,7 @@ package com.example.firstservice.activity.fragmentsActivity.adapter;
 
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,14 +15,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.firstservice.R;
 import com.example.firstservice.bean.Music;
+import com.example.firstservice.widget.MusicControllerBar;
 
 import java.io.IOException;
 import java.util.List;
 
-public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> implements AdapterView.OnItemClickListener {
+public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> {
     private List<Music> mlist;
     private Context mContext;
-    private MediaPlayer mediaPlayer;
+    private MediaPlayer mediaPlayer=new MediaPlayer();
+    private Music music;
+
+   // private int position;
     public MusicAdapter(List<Music> mlist) {
         this.mlist=mlist;
     }
@@ -39,30 +44,46 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
             mContext=parent.getContext();
         }
         View view = LayoutInflater.from(mContext).inflate(R.layout.items_music,parent,false);
-        ViewHolder holder = new ViewHolder(view);
-
+        final ViewHolder holder= new ViewHolder(view);
+        holder.titleText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int position = holder.getAdapterPosition();
+                try {
+                    mediaPlayer.reset();
+                    mediaPlayer.setDataSource(mlist.get(position).data);
+                    mediaPlayer.prepare();
+                    //mediaPlayer.start();
+//                    mediaPlayer.prepareAsync();
+                    mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                        @Override
+                        public void onPrepared(MediaPlayer mediaPlayer) {
+                            mediaPlayer.start();
+                        }
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                MusicControllerBar.setMusicInfo(mediaPlayer,mlist.get(position));
+            }
+        });
         return holder;
+    }
+
+    /**
+     * 媒体播放器的初始化
+     */
+    private void initMediaPlayer() {
+
+
+
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        final Music music = mlist.get(position);
+        music = mlist.get(position);
         holder.titleText.setText(music.title);//音乐名称
         holder.nameText.setText(music.artist);//演唱者
-        mediaPlayer=new MediaPlayer();
-        try {
-            mediaPlayer.setDataSource(music.data);
-            mediaPlayer.prepare();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        holder.titleText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mediaPlayer.start();
-            }
-        });
-
     }
 
     @Override
@@ -71,11 +92,6 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
     }
 
 
-
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        Toast.makeText(mContext, "nihao"+i, Toast.LENGTH_SHORT).show();
-    }
 
     /**
      * 子列表项外部控件

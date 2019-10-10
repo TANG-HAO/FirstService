@@ -6,7 +6,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -22,19 +21,18 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.firstservice.R;
 import com.example.firstservice.activity.fragmentsActivity.adapter.MusicAdapter;
 import com.example.firstservice.bean.Music;
-import com.example.firstservice.widget.MusicRelativeLayout;
+import com.example.firstservice.widget.MusicControllerBar;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MusicFragment extends Fragment implements AdapterView.OnItemClickListener {
-    private MusicRelativeLayout musicRelativeLayout;
+    private MusicControllerBar musicRelativeLayout;
     private Context mContext;
     private Activity mActivity;
     private View view;
@@ -82,7 +80,7 @@ public class MusicFragment extends Fragment implements AdapterView.OnItemClickLi
     }
 
     private void initView() {
-        musicRelativeLayout=(MusicRelativeLayout)view.findViewById(R.id.musicrelativelayout);
+        musicRelativeLayout=(MusicControllerBar)view.findViewById(R.id.musicrelativelayout);
         recyclerView=(RecyclerView)view.findViewById(R.id.music_recycle_view);
     }
 
