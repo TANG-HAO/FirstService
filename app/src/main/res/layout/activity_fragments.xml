@@ -13,4 +13,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
     </androidx.viewpager.widget.ViewPager>
+
+    <com.example.firstservice.widget.MusicControllerBar
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="bottom"
+        android:id="@+id/musicrelativelayout"
+        android:background="@color/white"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

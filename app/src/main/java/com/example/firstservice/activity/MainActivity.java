@@ -55,6 +55,7 @@ import com.example.firstservice.R;
 import com.example.firstservice.activity.contanctActivity.ContanctActivity;
 import com.example.firstservice.activity.locationActivity.MapActivity;
 import com.example.firstservice.activity.rightmenu_activity.PersonActivity;
+import com.example.firstservice.activity.rightmenu_activity.PersonActivity_tem;
 import com.example.firstservice.base.BaseActivity1;
 import com.example.firstservice.bean.ImageData;
 import com.example.firstservice.fragment.MianFragment;
@@ -266,7 +267,7 @@ public class MainActivity extends BaseActivity1 implements View.OnLongClickListe
                 sendBroadcast(intent);
                 break;
             case R.id.nav_friends:
-                Intent intent1 = new Intent(this, PersonActivity.class);
+                Intent intent1 = new Intent(this, PersonActivity_tem.class);
                 startActivity(intent1);
                 break;
             case R.id.nav_call://调用联系人
