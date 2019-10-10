@@ -47,6 +47,7 @@
             app:itemTextColor="@drawable/bottom_navigation_colors"
             app:menu="@menu/bottom_navigation_menu" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
     <com.google.android.material.navigation.NavigationView
         android:layout_width="300dp"
         android:layout_height="match_parent"

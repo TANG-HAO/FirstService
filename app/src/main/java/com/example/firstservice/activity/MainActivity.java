@@ -54,7 +54,6 @@ import com.baidu.mapapi.map.MapView;
 import com.example.firstservice.R;
 import com.example.firstservice.activity.contanctActivity.ContanctActivity;
 import com.example.firstservice.activity.locationActivity.MapActivity;
-import com.example.firstservice.activity.rightmenu_activity.OthersActivity;
 import com.example.firstservice.activity.rightmenu_activity.PersonActivity;
 import com.example.firstservice.base.BaseActivity1;
 import com.example.firstservice.bean.ImageData;
@@ -75,8 +74,6 @@ import org.litepal.crud.DataSupport;
 import java.io.File;
 import java.sql.Date;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -109,7 +106,7 @@ public class MainActivity extends BaseActivity1 implements View.OnLongClickListe
     private MapView mMapView;
     private BottomNavigationView bottomNavigationView;
 
-
+    private HomeFragement homeFragement;
     private FragmentManager fragmentManager;
 
     @Override
@@ -117,8 +114,8 @@ public class MainActivity extends BaseActivity1 implements View.OnLongClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_tem);
 
-
-
+        homeFragement=new HomeFragement();
+        initView();
         //getActionBar().hide();
         //replaceFragment(new MianFragment());
         LitePal.getDatabase();
@@ -143,7 +140,7 @@ public class MainActivity extends BaseActivity1 implements View.OnLongClickListe
     @Override
     protected void onStart() {
         super.onStart();
-        initView();
+
         initOnClick();
     }
 
@@ -205,8 +202,7 @@ public class MainActivity extends BaseActivity1 implements View.OnLongClickListe
         //picture=(CircleImageView)findViewById(R.id.icon_image);
         View header = navigationView.inflateHeaderView(R.layout.nav_header);//
         picture = (CircleImageView) header.findViewById(R.id.icon_image);
-
-        readImagePath();//readImagePathByLitePal();
+        readImagePathByLitePal();
         //greateImageView();
     }
 
@@ -292,10 +288,9 @@ public class MainActivity extends BaseActivity1 implements View.OnLongClickListe
                 Log.d(TAG, "正在进入网页");
                 startActivity(intent3);
                 break;
-            case R.id.nav_others:
-                Intent intent4 = new Intent(MainActivity.this, OthersActivity.class);
+            case R.id.nav_others1:
+                Intent intent4 = new Intent(this, com.example.firstservice.activity.fragmentsActivity.FragmentsActivity.class);
                 startActivity(intent4);
-                //底部导航栏的菜单项事件监听
 //            case R.id.home:
 //                replaceFragment(new HomeFragement());
 //                break;
@@ -343,6 +338,7 @@ public class MainActivity extends BaseActivity1 implements View.OnLongClickListe
                     downloadBinder.startDownload(url);
                     break;
                 case R.id.pause_download:
+
                     downloadBinder.pauseDownload();
                     break;
                 case R.id.cancle_download:
@@ -375,6 +371,7 @@ public class MainActivity extends BaseActivity1 implements View.OnLongClickListe
                                         break;
                                     case 1:
                                         openAlbum();//直接在选择图片好后返回到一个activity对图片进行裁剪
+
                                         Toast.makeText(MainActivity.this, "请选择图片", Toast.LENGTH_SHORT).show();
                                         break;
                                 }
@@ -421,7 +418,7 @@ public class MainActivity extends BaseActivity1 implements View.OnLongClickListe
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case 1:
-                if (grantResults.length < 0 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(this, "拒绝权限将无法使用程序", Toast.LENGTH_SHORT).show();
                     finish();
                 }
@@ -473,7 +470,6 @@ public class MainActivity extends BaseActivity1 implements View.OnLongClickListe
         super.onActivityResult(requestCode, resultCode, data);
         if (data == null) {
             Toast.makeText(this, "当前未选择图片", Toast.LENGTH_SHORT).show();
-            return;
         }
         switch (requestCode) {
             case CHOOSE_PHOTO:
@@ -489,6 +485,8 @@ public class MainActivity extends BaseActivity1 implements View.OnLongClickListe
             default:
                 break;
         }
+
+
     }
 
 
@@ -522,12 +520,13 @@ public class MainActivity extends BaseActivity1 implements View.OnLongClickListe
         }
         //修改为裁剪后引入
         diaplayImage(imagePath);
+
+
     }
 
     private void diaplayImage(String imagePath) {
         if (!imagePath.isEmpty()) {
-            writeImagePath(imagePath);
-            //writeImagePathByLitePal(imagePath);
+            writeImagePathByLitePal(imagePath);
             Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
             picture.setImageBitmap(bitmap);
         } else {
@@ -555,12 +554,7 @@ public class MainActivity extends BaseActivity1 implements View.OnLongClickListe
      */
     @SuppressLint("CommitPrefEdits")
     public void writeImagePath(String imagePath) {
-        TreeSet<String> treeSet = new TreeSet<>();
         SharedPreferences.Editor head = getSharedPreferences(HEAD, MODE_PRIVATE).edit();
-        SharedPreferences readhead = getSharedPreferences(HEAD, MODE_PRIVATE);
-        if(!(readhead.getString(IMPAGEPATH,"").isEmpty())){
-            readhead.edit().remove(IMPAGEPATH);
-        }
         head.putString(IMPAGEPATH, imagePath);
         head.apply();
     }
