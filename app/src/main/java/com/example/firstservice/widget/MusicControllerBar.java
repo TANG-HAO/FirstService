@@ -32,6 +32,8 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class MusicControllerBar extends RelativeLayout implements View.OnClickListener {
     private static  Context mContext;
     private static ImageButton stopButton;
@@ -49,6 +51,8 @@ public class MusicControllerBar extends RelativeLayout implements View.OnClickLi
 
     private static SimpleRoundProgress progressBar;
     private static Handler handler;
+
+    private static CircleImageView circleImageView;
 
 
     public MusicControllerBar(Context context, AttributeSet attrs) {
@@ -102,6 +106,7 @@ public class MusicControllerBar extends RelativeLayout implements View.OnClickLi
             stopButton.setBackgroundResource(R.drawable.ic_stop_black_24dp);
             progressBar.setBackgroundResource(R.drawable.ic_stop_black_24dp);
             song_title.setText(music_reciver.title);
+            circleImageView.setImageBitmap(music_reciver.albumPicture);
             isPlay=false;
 
 
@@ -121,6 +126,7 @@ public class MusicControllerBar extends RelativeLayout implements View.OnClickLi
     private void initView() {
         stopButton=(ImageButton)findViewById(R.id.stop_button);
         song_title=(TextView)findViewById(R.id.song_title);
+        circleImageView=(CircleImageView)findViewById(R.id.album_picture_controller);
         progressBar=(SimpleRoundProgress)findViewById(R.id.music_progressbar);
 
     }

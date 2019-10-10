@@ -4,10 +4,18 @@
     android:layout_height="50dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingRight="20dp">
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:paddingRight="5dp"
+        android:layout_alignParentLeft="true"
+        android:src="@drawable/ic_music_note_black_24dp"
+        android:layout_centerVertical="true"
+        android:id="@+id/album_picture_controller"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
+        android:layout_toRightOf="@id/album_picture_controller"
         android:text="null"
         android:layout_centerVertical="true"
         android:id="@+id/song_title"/>
@@ -29,17 +37,15 @@
         app:srp_progressColor="#f00"
         app:srp_roundColor="#f1f1f1"
         app:srp_roundWidth="3dip"
-        app:srp_startAngle="0"
+        app:srp_startAngle="270"
         app:srp_style="STROKE"
         android:layout_toLeftOf="@id/stop_button"
         android:layout_marginRight="10dp"
+
         android:background="@drawable/ic_play_arrow_black_24dp"
         android:id="@+id/music_progressbar"
         android:visibility="visible"
         android:layout_centerVertical="true"/>
-
-
-
 
     <ImageButton
         android:layout_width="wrap_content"

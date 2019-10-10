@@ -1,5 +1,7 @@
 package com.example.firstservice.bean;
 
+import android.graphics.Bitmap;
+
 public class Music {
     public long id;
     public String title;//音乐名称
@@ -8,4 +10,5 @@ public class Music {
     public String artist;//艺人
     public int duration;//音乐时长
     public long size;//音乐文件大小
+    public Bitmap albumPicture;//歌曲封面
 }
