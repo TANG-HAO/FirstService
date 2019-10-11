@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -30,6 +31,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.firstservice.R;
 import com.example.firstservice.activity.fragmentsActivity.adapter.MusicAdapter;
 import com.example.firstservice.bean.Music;
+import com.example.firstservice.service.MusicService;
 import com.example.firstservice.widget.MusicControllerBar;
 
 import java.util.ArrayList;
@@ -49,9 +51,14 @@ public class MusicFragment extends Fragment implements AdapterView.OnItemClickLi
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.music_fragment, container, false);
-        initView();
+        initView();//控件实例化
         requestPermission();
         getMusicInfo();
+
+        //直接启动musicService
+        Intent music_intent = new Intent(mContext, MusicService.class);
+        mContext.startService(music_intent);
+
         //初始化数据  结合适配器
         LinearLayoutManager gridLayoutManager = new LinearLayoutManager(mContext);
         recyclerView.setLayoutManager(gridLayoutManager);

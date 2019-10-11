@@ -2,7 +2,9 @@ package com.example.firstservice.bean;
 
 import android.graphics.Bitmap;
 
-public class Music {
+import java.io.Serializable;
+
+public class Music implements Serializable {
     public long id;
     public String title;//音乐名称
     public String data;//音乐文件路径
