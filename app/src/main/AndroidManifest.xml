@@ -69,13 +69,6 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".receiver.MusicReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.example.firstservice.service.MusicService"/>
-            </intent-filter>
-        </receiver>
 
         <activity android:name=".activity.forceoffline.LoginActivity"></activity>
         <activity android:name=".activity.rightmenu_activity.PersonActivity" />
@@ -93,6 +86,7 @@
                 <action android:name="com.baidu.location.service_v2.4" />
             </intent-filter>
         </service>
+
 
         <activity android:name=".activity.fragmentsActivity.FragmentsActivity" />
         <activity android:name=".activity.rightmenu_activity.PersonActivity_tem" />

@@ -47,6 +47,7 @@
             android:src="@drawable/ic_skip_previous_black_24dp"/>
 
         <ImageButton
+            android:id="@+id/notification_play_pause_album"
             android:layout_marginLeft="10dp"
             android:layout_width="26dp"
             android:layout_height="26dp"

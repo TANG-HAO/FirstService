@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.firstservice.R;
 import com.example.firstservice.bean.Music;
+import com.example.firstservice.utils.GetBitMapById;
 import com.example.firstservice.widget.MusicControllerBar;
 
 import java.io.IOException;
@@ -69,60 +70,60 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
             @Override
             public void onClick(View view) {
                 int position = holder.getAdapterPosition();
-                try {
-                    mediaPlayer.reset();
-                    mediaPlayer.setDataSource(mlist.get(position).data);
-                    mediaPlayer.prepare();
-                    //mediaPlayer.start();
-//                    mediaPlayer.prepareAsync();
-                    mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                        @Override
-                        public void onPrepared(MediaPlayer mediaPlayer) {
-                            mediaPlayer.start();
-                        }
-                    });
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                MusicControllerBar.setMusicInfo(mediaPlayer, mlist.get(position));//传入自定义控件所需的参数
-                //创建通知
-                NotificationChannel channelbody = null;
-
-                if (notificationManager == null) {
-                    notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-                }
-                //判断是否为android8以上 若是则创建notificationChannel 并指定其id,name,importance
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                    channelbody = new NotificationChannel("播放音乐", "播放音乐", NotificationManager.IMPORTANCE_DEFAULT);
-                    notificationManager.createNotificationChannel(channelbody);
-                }
-                //创建通知布局
-                remoteViews = new RemoteViews(mContext.getPackageName(), R.layout.notification_music);
-                remoteViews.setImageViewBitmap(R.id.notification_album_picture, mlist.get(position).albumPicture);
-                remoteViews.setTextViewText(R.id.notification_album_title, mlist.get(position).title);
-                remoteViews.setTextViewText(R.id.notification_album_artist, mlist.get(position).artist);
-
-
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext);
-                Notification notification = builder
-                        //.setContentTitle(mlist.get(position).title)
-//                        .setContentText(mlist.get(position).artist)
-//                        .setLargeIcon(mlist.get(position).albumPicture)
-                        .setSmallIcon(R.drawable.music_albnum_picture)
-                        .setTicker("开始播放啦~~")
-                        .setOngoing(true)//设置常驻通知栏还是可右滑动取消
-                        .setChannelId("播放音乐")
-                        .setContent(remoteViews)
-                        .build();
-                notificationManager.notify(1, notification);
+                music=mlist.get(position);
+//                try {
+//                    mediaPlayer.reset();
+//                    mediaPlayer.setDataSource(mlist.get(position).data);
+//                    mediaPlayer.prepare();
+//                    //mediaPlayer.start();
+////                    mediaPlayer.prepareAsync();
+//                    mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+//                        @Override
+//                        public void onPrepared(MediaPlayer mediaPlayer) {
+//                            mediaPlayer.start();
+//                        }
+//                    });
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+         //      MusicControllerBar.setMusicInfo(mediaPlayer, mlist.get(position));//传入自定义控件所需的参数
+//                //创建通知
+//                NotificationChannel channelbody = null;
+//
+//                if (notificationManager == null) {
+//                    notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+//                }
+//                //判断是否为android8以上 若是则创建notificationChannel 并指定其id,name,importance
+//                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+//                    channelbody = new NotificationChannel("播放音乐", "播放音乐", NotificationManager.IMPORTANCE_DEFAULT);
+//                    notificationManager.createNotificationChannel(channelbody);
+//                }
+//                //创建通知布局
+//                remoteViews = new RemoteViews(mContext.getPackageName(), R.layout.notification_music);
+//                remoteViews.setImageViewBitmap(R.id.notification_album_picture, mlist.get(position).albumPicture);
+//                remoteViews.setTextViewText(R.id.notification_album_title, mlist.get(position).title);
+//                remoteViews.setTextViewText(R.id.notification_album_artist, mlist.get(position).artist);
+//
+//
+//                NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext);
+//                Notification notification = builder
+//                        //.setContentTitle(mlist.get(position).title)
+////                        .setContentText(mlist.get(position).artist)
+////                        .setLargeIcon(mlist.get(position).albumPicture)
+//                        .setSmallIcon(R.drawable.music_albnum_picture)
+//                        .setTicker("开始播放啦~~")
+//                        .setOngoing(true)//设置常驻通知栏还是可右滑动取消
+//                        .setChannelId("播放音乐")
+//                        .setContent(remoteViews)
+//                        .build();
+//                notificationManager.notify(1, notification);
 
                 //todo 发送广播，传递music
-                Music music_tem=mlist.get(position);
-                Intent music_intent = new Intent("com.example.firstservice.service.MusicService");
-                Bundle bundle = new Bundle();
-                bundle.putSerializable(MUSIC,music_tem);
-                music_intent.putExtras(bundle);
-                mContext.sendBroadcast(music_intent);
+                Intent intent = new Intent("play");
+                intent.putExtra(MUSIC,music);
+                mContext.sendBroadcast(intent);
+
+
 
 
             }
@@ -152,7 +153,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
         music = mlist.get(position);
         holder.titleText.setText(music.title);//音乐名称
         holder.nameText.setText(music.artist);//演唱者
-        holder.circleImageView.setImageBitmap(music.albumPicture);//歌曲封面
+        holder.circleImageView.setImageBitmap(GetBitMapById.getBitMap(music.albumPictureid));//歌曲封面
     }
 
     @Override
@@ -177,14 +178,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
         }
     }
 
-    public class MusicBroadCastReciver extends BroadcastReceiver {
 
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            //todo 实现通知栏ui的更新
-
-        }
-    }
 
 
 }

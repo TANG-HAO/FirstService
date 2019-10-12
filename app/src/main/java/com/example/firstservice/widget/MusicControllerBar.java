@@ -2,6 +2,7 @@ package com.example.firstservice.widget;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.MediaPlayer;
@@ -25,6 +26,8 @@ import androidx.annotation.RequiresApi;
 
 import com.example.firstservice.R;
 import com.example.firstservice.bean.Music;
+import com.example.firstservice.utils.GetBitMapById;
+import com.example.firstservice.utils.MusicOperate;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -106,7 +109,7 @@ public class MusicControllerBar extends RelativeLayout implements View.OnClickLi
             stopButton.setBackgroundResource(R.drawable.ic_stop_black_24dp);
             progressBar.setBackgroundResource(R.drawable.ic_stop_black_24dp);
             song_title.setText(music_reciver.title);
-            circleImageView.setImageBitmap(music_reciver.albumPicture);
+            circleImageView.setImageBitmap(GetBitMapById.getBitMap(music_reciver.albumPictureid));
             isPlay=false;
 
 
@@ -145,8 +148,11 @@ public class MusicControllerBar extends RelativeLayout implements View.OnClickLi
                 }else{//暂停
                     stopButton.setBackgroundResource(R.drawable.ic_play_arrow_black_24dp);//点击暂停切换成开始图片
                     if(mediaPlayer_reciver!=null){
-                        mediaPlayer_reciver.pause();//音乐暂停
-                        currentPosition=mediaPlayer_reciver.getCurrentPosition();
+//                        mediaPlayer_reciver.pause();//音乐暂停
+//                        currentPosition=mediaPlayer_reciver.getCurrentPosition();
+
+                        Intent intent = new Intent(MusicOperate.PAUSE);
+                        mContext.sendBroadcast(intent);
                     }
                     isPlay=true;
                 }

@@ -32,6 +32,7 @@ import com.example.firstservice.R;
 import com.example.firstservice.activity.fragmentsActivity.adapter.MusicAdapter;
 import com.example.firstservice.bean.Music;
 import com.example.firstservice.service.MusicService;
+import com.example.firstservice.utils.GetBitMapById;
 import com.example.firstservice.widget.MusicControllerBar;
 
 import java.util.ArrayList;
@@ -115,39 +116,15 @@ public class MusicFragment extends Fragment implements AdapterView.OnItemClickLi
             music.artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
             music.duration = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
             music.size = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.SIZE));
-            music.albumPicture = getBitMap(cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)));
+           // music.albumPicture = GetBitMapById.getBitMap(cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)));
+            music.albumPictureid = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
             musics.add(music);
         }
         cursor.close();
 
     }
 
-    /**
-     * 根据id获取封面
-     *
-     * @param albumId
-     * @return
-     */
-    private Bitmap getBitMap(int albumId) {
 
-        String mUriAlbums = "content://media/external/audio/albums";
-        String[] projection = new String[]{"album_art"};
-        Cursor cur = mContext.getContentResolver().query(Uri.parse(mUriAlbums + "/" + Integer.toString(albumId)), projection, null, null, null);
-        String album_art = null;
-        if (cur.getCount() > 0 && cur.getColumnCount() > 0) {
-            cur.moveToNext();
-            album_art = cur.getString(0);
-        }
-        cur.close();
-        Bitmap bm = null;
-        if (album_art != null) {
-            bm = BitmapFactory.decodeFile(album_art);
-        } else {//默认封面
-            bm = BitmapFactory.decodeResource(getResources(), R.drawable.music_albnum_picture);
-        }
-        return bm;
-
-    }
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
