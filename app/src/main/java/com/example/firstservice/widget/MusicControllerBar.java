@@ -70,10 +70,11 @@ public class MusicControllerBar extends RelativeLayout implements View.OnClickLi
     private static CircleImageView circleImageView;
     private NotificationMusicReceiver musicReceiver;
 
-    private List<Music> musicList=new ArrayList<Music>();//音乐列表
+    private static List<Music> musicList=new ArrayList<Music>();//音乐列表
 
     private MusicDynamicAdapter adapter;
     private ImageButton menu_Button;
+    private RecyclerView recyclerView;
 
 
 
@@ -118,6 +119,9 @@ public class MusicControllerBar extends RelativeLayout implements View.OnClickLi
         System.out.println(mediaPlayer.getDuration());
         progressBar.setMax(mediaPlayer.getDuration());
         setMusicControllerstate();//设置初始状态
+        if(music_reciver!=null){
+            musicList.add(music_reciver);
+        }
         //创建子线程
         new Timer().schedule(new TimerTask() {
             @Override
@@ -194,26 +198,27 @@ public class MusicControllerBar extends RelativeLayout implements View.OnClickLi
         Log.d("dialog","点击出现dialog");
         //动态加载视图，从视图中实例化recycleView,将点击的music反转塞入，将视图set进创建的dialog
         View view = View.inflate(mContext, layout_id, null);
-//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
-//        RecyclerView recyclerView=(RecyclerView)view.findViewById(R.id.musci_dynamic_recycle_view);
-//        recyclerView.setLayoutManager(linearLayoutManager);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
+        recyclerView=(RecyclerView)view.findViewById(R.id.musci_dynamic_recycle_view);
+        recyclerView.setLayoutManager(linearLayoutManager);
 
-//        musicList.add(music_reciver);
-//        Collections.reverse(musicList);
-//        List<Music> reverseList=musicList;
-//        Collections.reverse(musicList);
+        Collections.reverse(musicList);
+        List<Music> reverseList=musicList;
+        Collections.reverse(musicList);
 
-//        adapter = new MusicDynamicAdapter(musicList);
-//        recyclerView.setAdapter(adapter);
+        adapter = new MusicDynamicAdapter(reverseList);
+        recyclerView.setAdapter(adapter);
+        Log.d("musicList",musicList.size()+"====");
 
-        Dialog dialog = new Dialog(mContext, R.style.NormalDialogStyle);//设置样式
+        Dialog dialog = new Dialog(mContext, R.style.NormalDialogStyle);//设置样式 在styles中添加style
         dialog.setContentView(view);
         Window window = dialog.getWindow();
-        window.setLayout(WindowManager.LayoutParams.FILL_PARENT,ScreenUtils.getScreenHeight(mContext)/12*7);
+        window.setLayout(WindowManager.LayoutParams.FILL_PARENT,ScreenUtils.getScreenHeight(mContext)/12*7);//设置弹出框高宽
         window.setGravity(Gravity.BOTTOM);
         //设置动画
         window.setWindowAnimations(R.style.normalDialogAnim);
-
+        //设置触摸外边界消失
+        dialog.setCanceledOnTouchOutside(true);
         dialog.show();
 
 

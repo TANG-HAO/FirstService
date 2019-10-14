@@ -42,9 +42,9 @@
     </style>
 
     <!--对话框的样式-->
-    <style name="NormalDialogStyle">
+    <style name="NormalDialogStyle" parent="AlertDialog.AppCompat">
         <!--对话框背景 -->
-        <item name="android:windowBackground">#c1200080</item>
+        <item name="android:windowBackground">@drawable/shape_round_corner</item>
         <!--边框 -->
         <item name="android:windowFrame">@null</item>
         <!--没有标题 -->
@@ -59,6 +59,8 @@
         <item name="android:windowAnimationStyle">@style/normalDialogAnim</item>
         <!--背景变暗-->
         <item name="android:backgroundDimEnabled">true</item>
+
+
     </style>
     <!--对话框动画-->
     <style name="normalDialogAnim" parent="android:Animation">
