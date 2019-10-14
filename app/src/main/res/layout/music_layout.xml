@@ -23,15 +23,6 @@
     <com.example.firstservice.widget.SimpleRoundProgress
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_toLeftOf="@id/stop_button"
-        android:layout_marginRight="10dp"
-        android:background="@drawable/ic_stop_black_24dp"
-
-        android:visibility="gone"
-        android:layout_centerVertical="true"/>
-    <com.example.firstservice.widget.SimpleRoundProgress
-        android:layout_width="30dp"
-        android:layout_height="30dp"
         android:layout_gravity="center"
         app:srp_max="100"
         app:srp_progressColor="#f00"
@@ -39,7 +30,7 @@
         app:srp_roundWidth="3dip"
         app:srp_startAngle="270"
         app:srp_style="STROKE"
-        android:layout_toLeftOf="@id/stop_button"
+        android:layout_toLeftOf="@id/menu_button"
         android:layout_marginRight="10dp"
 
         android:background="@drawable/ic_play_arrow_black_24dp"
@@ -54,13 +45,6 @@
         android:background="@drawable/ic_menu_black_24dp"
         android:id="@+id/menu_button"
         android:layout_centerVertical="true"/>
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/menu_button"
-        android:background="@drawable/ic_play_arrow_black_24dp"
-        android:id="@+id/stop_button"
-        android:layout_marginRight="10dp"
-        android:layout_centerVertical="true"/>
+
 
 </RelativeLayout>

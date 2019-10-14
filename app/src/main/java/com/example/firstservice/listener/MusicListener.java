@@ -12,4 +12,13 @@ public interface MusicListener {
      */
     void pause();
 
+    /**
+     * 继续播放
+     */
+    void continue1();
+
+    /**
+     * 判断翻转
+     */
+    void convert();
 }
