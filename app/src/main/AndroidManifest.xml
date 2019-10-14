@@ -1,27 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.firstservice">
-    <!-- 获取网络状态，根据网络状态切换进行数据请求网络转换 -->
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <!-- 访问网络，进行地图相关业务数据请求，包括地图数据，路线规划，POI检索等 -->
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <!-- 这个权限用于进行网络定位 -->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
+    <!-- 获取网络状态，根据网络状态切换进行数据请求网络转换 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- 访问网络，进行地图相关业务数据请求，包括地图数据，路线规划，POI检索等 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- 这个权限用于进行网络定位 -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
-
     <application
-
-        android:name="com.example.firstservice.application.MyApplication"
+        android:name=".application.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -29,9 +25,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppThemeLightNoActionBar"
         android:usesCleartextTraffic="true">
+        <service
+            android:name=".service.MusicService"
+            android:enabled="true"
+            android:exported="true"></service>
+
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="NlFb2F7xb923kCi5DLyltW24scfLpyG7" />
+
         <activity
             android:name=".activity.MainActivity"
             android:exported="true"
@@ -39,11 +41,12 @@
             android:theme="@style/AppThemeLightNoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <service android:name=".service.Myservice"></service>
+        <service android:name=".service.Myservice" />
         <service android:name=".service.MyIntentService" />
         <service
             android:name=".service.DownloadService"
@@ -66,20 +69,13 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".activity.forceoffline.LoginActivity">
 
-        </activity>
+        <activity android:name=".activity.forceoffline.LoginActivity"></activity>
         <activity android:name=".activity.rightmenu_activity.PersonActivity" />
-        <activity android:name=".mail.MailActivity"
-            >
-
-        </activity>
-
-        <activity android:name=".activity.locationActivity.MapActivity"
-
-            android:theme="@style/mapActivity">
-
-        </activity>
+        <activity android:name=".mail.MailActivity"></activity>
+        <activity
+            android:name=".activity.locationActivity.MapActivity"
+            android:theme="@style/mapActivity"></activity>
 
         <service
             android:name="com.baidu.location.f"
@@ -87,13 +83,13 @@
             android:permission="android.permission.BAIDU_LOCATION_SERVICE"
             android:process=":remote">
             <intent-filter>
-                <action android:name="com.baidu.location.service_v2.4"></action>
+                <action android:name="com.baidu.location.service_v2.4" />
             </intent-filter>
         </service>
 
-    <activity android:name=".activity.fragmentsActivity.FragmentsActivity"/>
-    <activity android:name=".activity.rightmenu_activity.PersonActivity_tem"/>
-    </application>
 
+        <activity android:name=".activity.fragmentsActivity.FragmentsActivity" />
+        <activity android:name=".activity.rightmenu_activity.PersonActivity_tem" />
+    </application>
 
 </manifest>

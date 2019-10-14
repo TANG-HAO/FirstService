@@ -36,6 +36,9 @@ public class FragmentsActivity extends AppCompatActivity implements View.OnClick
         initPage();//实现功能
         tabLayout.setupWithViewPager(viewPager);//将TabLayout和ViewPager关联起来。
         //initTab();//初始化tableLayout
+
+
+
     }
 
 

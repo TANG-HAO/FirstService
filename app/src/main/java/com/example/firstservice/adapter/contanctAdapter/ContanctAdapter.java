@@ -1,5 +1,6 @@
 package com.example.firstservice.adapter.contanctAdapter;
 
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,6 +48,7 @@ public class ContanctAdapter extends RecyclerView.Adapter<ContanctAdapter.ViewHo
         });
         return viewHolder;
     }
+
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
