@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -29,6 +30,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -39,6 +41,7 @@ import com.example.firstservice.utils.GetBitMapById;
 import com.example.firstservice.utils.MusicOperate;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -47,10 +50,12 @@ import java.util.TimerTask;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static androidx.constraintlayout.widget.Constraints.TAG;
 import static com.baidu.location.e.a.p;
 
 public class MusicControllerBar extends RelativeLayout implements View.OnClickListener {
-    private static  Context mContext;
+
+    private static Context mContext;
     private static ImageButton stopButton;
     private View view;
     private ContentResolver resolver;
@@ -60,7 +65,7 @@ public class MusicControllerBar extends RelativeLayout implements View.OnClickLi
 
     private static boolean isPlay;
     private static Music music_reciver;
-    private static  MediaPlayer mediaPlayer_reciver;
+    private static MediaPlayer mediaPlayer_reciver;
 
     private int currentPosition;//暂停时目前的位置
 
@@ -70,82 +75,108 @@ public class MusicControllerBar extends RelativeLayout implements View.OnClickLi
     private static CircleImageView circleImageView;
     private NotificationMusicReceiver musicReceiver;
 
-    private static List<Music> musicList=new ArrayList<Music>();//音乐列表
+    private static List<Music> musicList = new ArrayList<Music>();//音乐列表
 
     private MusicDynamicAdapter adapter;
     private ImageButton menu_Button;
-    private RecyclerView recyclerView;
 
-
+    private static List<Music> reverseList;
+    private ImageView deleteAllImage;//清空
+    private static TextView musicCount;
 
 
     public MusicControllerBar(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mContext=context;
+        mContext = context;
         view = LayoutInflater.from(context).inflate(R.layout.music_layout, this);
         //实例化控件
         initView();
         //添加监听事件
         addListener();
         //主线程中更新ui
-        handler = new Handler(){
+        handler = new Handler() {
             @Override
             public void handleMessage(@NonNull Message msg) {
                 super.handleMessage(msg);
-                if(msg.what==0x11){
+                if (msg.what == 0x11) {
                     progressBar.setProgress(mediaPlayer_reciver.getCurrentPosition());
                 }
             }
         };
         //开启底部控件广播
-        musicReceiver=new NotificationMusicReceiver();
+        musicReceiver = new NotificationMusicReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(MusicOperate.NOTIFICATION_PAUSE);
         intentFilter.addAction(MusicOperate.NOTIFICATION_PLAY);
-        mContext.registerReceiver(musicReceiver,intentFilter);
+        intentFilter.addAction(MusicOperate.MUSIC_COUNT);
+        intentFilter.addAction(MusicOperate.NEXT_MUSIC);
+        intentFilter.addAction(MusicOperate.PREVIOUS_MUSIC);
+        mContext.registerReceiver(musicReceiver, intentFilter);
 
     }
 
     /**
      * 设置媒体播放器
      * 并更新ui界面
+     *
      * @param mediaPlayer
      * @param music
      */
     public static void setMusicInfo(final MediaPlayer mediaPlayer, Music music) {
-        mediaPlayer_reciver=mediaPlayer;
-        music_reciver=music;
-        Log.d("hsdjkas",106031+"");
-        System.out.println(mediaPlayer.getDuration());
+        Log.d(TAG,"调用静态犯法传入媒体播放器和music对象");
+        mediaPlayer_reciver = mediaPlayer;
+        music_reciver = music;
+
         progressBar.setMax(mediaPlayer.getDuration());
         setMusicControllerstate();//设置初始状态
-        if(music_reciver!=null){
-            musicList.add(music_reciver);
+
+        //添加点击的音乐到list
+        if (music_reciver != null && isContains(music)) {
+            musicList.add(music);
+            reverseList = musicList;
+            Collections.reverse(reverseList);
         }
+
+
+
         //创建子线程
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
                 handler.sendEmptyMessage(0x11);
             }
-        },0,1000);
+        }, 0, 1000);
 
+    }
+
+    /**
+     * 判断是否存在已有的music
+     *
+     * @param music
+     * @return
+     */
+    private static boolean isContains(Music music) {
+        boolean flag = true;
+        for (int i = 0; i < musicList.size(); i++) {
+            if (musicList.get(i).id == music.id) {
+                flag = false;
+            }
+        }
+        return flag;
     }
 
     /**
      * 设置初始状态
      */
-    public static  void setMusicControllerstate(){
-            progressBar.setBackgroundResource(R.drawable.ic_pause_black_24dp);
-            song_title.setText(music_reciver.title);
-            circleImageView.setImageBitmap(GetBitMapById.getBitMap(music_reciver.albumPictureid));
-            isPlay=false;
-
-
+    public static void setMusicControllerstate() {
+        progressBar.setBackgroundResource(R.drawable.ic_pause_black_24dp);
+        song_title.setText(music_reciver.title);
+        circleImageView.setImageBitmap(GetBitMapById.getBitMap(music_reciver.albumPictureid));
+        isPlay = false;
     }
 
-    public static void setMusicInfo(MediaPlayer musicPlayer) {
-
+    public static void setMusicList(List<Music> musicList) {
+        musicCount.setText(musicList.size() + "");
     }
 
     /**
@@ -161,59 +192,68 @@ public class MusicControllerBar extends RelativeLayout implements View.OnClickLi
      * 控件的实例化
      */
     private void initView() {
-       // stopButton=(ImageButton)findViewById(R.id.stop_button);
-
-        song_title=(TextView)findViewById(R.id.song_title);
-        circleImageView=(CircleImageView)findViewById(R.id.album_picture_controller);
-        progressBar=(SimpleRoundProgress)findViewById(R.id.music_progressbar);
-        menu_Button=(ImageButton)findViewById(R.id.menu_button);
+        song_title = (TextView) findViewById(R.id.song_title);
+        circleImageView = (CircleImageView) findViewById(R.id.album_picture_controller);
+        progressBar = (SimpleRoundProgress) findViewById(R.id.music_progressbar);
+        menu_Button = (ImageButton) findViewById(R.id.menu_button);
 
     }
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.music_progressbar:
-                if(isPlay){//播放
-                    progressBarState(R.drawable.ic_pause_black_24dp,MusicOperate.CONTINUE,false);
 
-                }else{//暂停
+                if (isPlay) {//播放
+                    progressBarState(R.drawable.ic_pause_black_24dp, MusicOperate.CONTINUE, false);
+
+                } else {//暂停
                     progressBarState(R.drawable.ic_play_arrow_black_24dp, MusicOperate.PAUSE, true);
                 }
                 break;
             case R.id.menu_button:
                 //展示dailog
-                Log.d("dialog","点击出现dialog");
-                showDynamicList(mContext,R.layout.dynamic_dialog);
+                Log.d("dialog", "点击出现dialog");
+                showDynamicList(mContext, R.layout.dynamic_dialog);
                 break;
         }
     }
 
     /**
      * 点击出现Dialog
+     *
      * @param mContext
      * @param layout_id
      */
-    private void showDynamicList(Context mContext,int layout_id) {
-        Log.d("dialog","点击出现dialog");
+    private void showDynamicList(Context mContext, int layout_id) {
+        Log.d("dialog", "点击出现dialog");
         //动态加载视图，从视图中实例化recycleView,将点击的music反转塞入，将视图set进创建的dialog
         View view = View.inflate(mContext, layout_id, null);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
-        recyclerView=(RecyclerView)view.findViewById(R.id.musci_dynamic_recycle_view);
-        recyclerView.setLayoutManager(linearLayoutManager);
 
-        Collections.reverse(musicList);
-        List<Music> reverseList=musicList;
-        Collections.reverse(musicList);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(mContext, 1);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.musci_dynamic_recycle_view);
+        recyclerView.setLayoutManager(gridLayoutManager);
+
+        //reverseList = musicList;
+        //Collections.reverse(reverseList);
+        //实例化dialog控件
+        initDynamicView(view);
+        deleteAllImage.setOnClickListener(new onClick());
+
+
+        musicCount.setText(reverseList.size() + "");//显示musicList的数据
+
 
         adapter = new MusicDynamicAdapter(reverseList);
         recyclerView.setAdapter(adapter);
-        Log.d("musicList",musicList.size()+"====");
+        //adapter.notifyDataSetChanged();
+
+
 
         Dialog dialog = new Dialog(mContext, R.style.NormalDialogStyle);//设置样式 在styles中添加style
         dialog.setContentView(view);
         Window window = dialog.getWindow();
-        window.setLayout(WindowManager.LayoutParams.FILL_PARENT,ScreenUtils.getScreenHeight(mContext)/12*7);//设置弹出框高宽
+        window.setLayout(WindowManager.LayoutParams.FILL_PARENT, ScreenUtils.getScreenHeight(mContext) / 12 * 7);//设置弹出框高宽
         window.setGravity(Gravity.BOTTOM);
         //设置动画
         window.setWindowAnimations(R.style.normalDialogAnim);
@@ -221,6 +261,35 @@ public class MusicControllerBar extends RelativeLayout implements View.OnClickLi
         dialog.setCanceledOnTouchOutside(true);
         dialog.show();
 
+
+    }
+
+    /**
+     * diaolog布局响应
+     */
+    private class onClick implements OnClickListener {
+        @Override
+        public void onClick(View view) {
+            switch (view.getId()) {
+                case R.id.music_delete_all:
+                    Log.d("点击清空", "清空");
+                    reverseList.clear();
+                    musicCount.setText(reverseList.size() + "");
+                    adapter.notifyDataSetChanged();
+
+                    break;
+                default:
+            }
+        }
+    }
+
+    /**
+     * 实例化控件dialog
+     */
+    private void initDynamicView(View view) {
+
+        deleteAllImage = (ImageView) view.findViewById(R.id.music_delete_all);
+        musicCount = (TextView) view.findViewById(R.id.music_list_size);
 
     }
 
@@ -236,32 +305,119 @@ public class MusicControllerBar extends RelativeLayout implements View.OnClickLi
     /**
      * 设置progressBar
      */
-    public void setProgressBar(){
+    public void setProgressBar() {
         progressBar.getProgress();
     }
 
-    public class NotificationMusicReceiver extends BroadcastReceiver{
+    public class NotificationMusicReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            switch (action){
+            switch (action) {
                 case MusicOperate.NOTIFICATION_PAUSE:
                     pause();
                     break;
                 case MusicOperate.NOTIFICATION_PLAY:
                     play();
                     break;
-                    default :
+                case MusicOperate.MUSIC_COUNT:
+                    setMusicCount(intent);
+                case MusicOperate.NEXT_MUSIC:
+                    Log.d(TAG,"接收到播放下一首的广播");
+                    playNextMusic(intent);
+                    break;
+                case MusicOperate.PREVIOUS_MUSIC:
+                    Log.d(TAG,"接收到播放上一首的广播");
+                    playPreviousMusic(intent);
+                    break;
+                default:
             }
         }
     }
+
+    /**
+     *播放上一首歌
+     */
+    private void playPreviousMusic(Intent intent) {
+        int position = getMusicPosition(intent,MusicOperate.PREVIOUS_MUSIC);
+        Log.d(TAG,"上一首歌的position为 "+(position-1));
+        Music pre_music = null;
+        if(position > 0){
+            pre_music = reverseList.get( position-1);
+        }
+        if(pre_music != null){
+            sendPreOrNextBroadCast(pre_music);
+        }else{
+            Toast.makeText(mContext, "已经是第一首歌了", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * 播放下一首歌
+     * @param intent
+     */
+    private void playNextMusic(Intent intent) {
+        int position=getMusicPosition(intent,MusicOperate.NEXT_MUSIC);
+        Log.d(TAG,"下一首歌的position为 "+(position+1));
+        Music next_music=null;
+        if(position < (reverseList.size()-1)){
+            next_music = reverseList.get( position +1);
+        }
+
+        if(next_music != null){
+            sendPreOrNextBroadCast(next_music);
+        }else {
+            Toast.makeText(mContext, "最后一首歌了", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * 将得到的上一首或者下一首歌发送给Service
+     * @param music
+     */
+    private void sendPreOrNextBroadCast(Music music) {
+        progressBar.setBackgroundResource(R.drawable.ic_pause_black_24dp);
+        song_title.setText(music.title);
+        circleImageView.setImageBitmap(GetBitMapById.getBitMap(music.albumPictureid));
+        isPlay = false;
+
+        Intent intent = new Intent(MusicOperate.PLAY);
+        intent.putExtra("music", music);
+        mContext.sendBroadcast(intent);
+    }
+
+    /**
+     * 获取广播传过来的music所处的position
+     * @param intent
+     * @return
+     */
+    private int getMusicPosition(Intent intent,String musicString) {
+        Music music = (Music) intent.getParcelableExtra(musicString);
+        int position = 0;
+        for (int i = 0; i < reverseList.size(); i++) {
+            if (reverseList.get(i).id==music.id){
+                position=i;
+
+            }
+        }
+        return position;
+    }
+
+    /**
+     * 通知改变music的数量
+     */
+    private void setMusicCount(Intent intent) {
+        int music_count = intent.getIntExtra(MusicOperate.MUSIC_COUNT, 0);
+        musicCount.setText(music_count+"");
+    }
+
     /**
      * 接受通知栏发送过来的消息，播放音乐
      */
     private void play() {
         mediaPlayer_reciver.start();
         progressBar.setBackgroundResource(R.drawable.ic_pause_black_24dp);
-        isPlay=false;
+        isPlay = false;
     }
 
     /**
@@ -269,9 +425,9 @@ public class MusicControllerBar extends RelativeLayout implements View.OnClickLi
      */
     private void pause() {
         //音乐停止，改变ui,设置isPlay为true
-       mediaPlayer_reciver.pause();
-       progressBar.setBackgroundResource(R.drawable.ic_play_arrow_black_24dp);
-       isPlay=true;
+        mediaPlayer_reciver.pause();
+        progressBar.setBackgroundResource(R.drawable.ic_play_arrow_black_24dp);
+        isPlay = true;
     }
 
 

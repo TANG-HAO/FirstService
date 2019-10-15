@@ -26,6 +26,7 @@ import com.example.firstservice.listener.MusicListener;
 import com.example.firstservice.utils.GetBitMapById;
 import com.example.firstservice.utils.MusicOperate;
 import com.example.firstservice.widget.MusicControllerBar;
+import com.example.firstservice.widget.RollingTextView;
 
 import java.io.IOException;
 
@@ -213,6 +214,19 @@ public class MusicService extends Service {
         intent.putExtra("isPlay", isPlay);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         remoteViews.setOnClickPendingIntent(R.id.notification_play_pause_album, pendingIntent);
+        //点击下一首歌
+        Intent next_intent = new Intent(MusicOperate.NEXT_MUSIC);
+        next_intent.putExtra(MusicOperate.NEXT_MUSIC , music);
+        PendingIntent next_pendingIntent = PendingIntent.getBroadcast(mContext, 0, next_intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        remoteViews.setOnClickPendingIntent(R.id.next_music, next_pendingIntent);
+
+        //点击上一首歌
+        Intent previous_intent = new Intent(MusicOperate.PREVIOUS_MUSIC);
+        previous_intent.putExtra(MusicOperate.PREVIOUS_MUSIC , music);
+        PendingIntent pre_pendingIntent = PendingIntent.getBroadcast(mContext, 0, previous_intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        remoteViews.setOnClickPendingIntent(R.id.previous_music,pre_pendingIntent);
+
+
     }
 
     /**
@@ -225,6 +239,7 @@ public class MusicService extends Service {
         remoteViews.setTextViewText(R.id.notification_album_title, music.title);
         remoteViews.setTextViewText(R.id.notification_album_artist, music.artist);
         remoteViews.setImageViewResource(R.id.notification_play_pause_album, R.drawable.ic_pause_black_24dp);
+
     }
 
     /**

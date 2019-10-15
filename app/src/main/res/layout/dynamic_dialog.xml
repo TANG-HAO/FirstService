@@ -11,6 +11,7 @@
             android:layout_height="wrap_content"
             >
             <ImageView
+                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_repeat_one_black_24dp"
@@ -37,16 +38,26 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/list_size"
+                android:id="@+id/music_list_size"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/left_kuohao"
                 android:text="98"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/list_size"
+                android:layout_toRightOf="@id/music_list_size"
                 android:layout_centerVertical="true"
                 android:text=")"/>
+
+
+            <ImageView
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/music_delete_all"
+                android:src="@drawable/ic_delete_black_24dp"
+                android:layout_alignParentRight="true"
+                android:paddingRight="5dp"/>
         </RelativeLayout>
 
     </RelativeLayout>

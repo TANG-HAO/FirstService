@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
      android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:paddingRight="5dp"
+   >
     <LinearLayout
+        android:layout_centerVertical="true"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_alignParentLeft="true">
+        android:layout_alignParentLeft="true"
+        android:padding="5dp">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -14,8 +18,23 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textSize="10dp"
             android:id="@+id/artist_dynamic_text"/>
+
     </LinearLayout>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_close_black_24dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:id="@+id/music_delete"
+        />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#808080"
+        android:layout_alignParentBottom="true"/>
 
 
 </RelativeLayout>

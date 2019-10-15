@@ -70,6 +70,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
             public void onClick(View view) {
                 int position = holder.getAdapterPosition();
                 music=mlist.get(position);
+
                 // 发送广播，传递music
                 Intent intent = new Intent("play");
                 intent.putExtra(MUSIC,music);
