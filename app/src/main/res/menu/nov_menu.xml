@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/shu_jia"
+        android:checked="true"
+        android:title="书架"
+        android:icon="@mipmap/books">书架</item>
+    <item
+        android:id="@+id/nov_rank"
+        android:title="排行"
+        android:checked="false"
+        android:icon="@mipmap/ranking">排行</item>
+    <item
+        android:id="@+id/nov_sort"
+        android:title="分类"
+        android:checked="false"
+        android:icon="@mipmap/sort">分类</item>
+    <item
+        android:id="@+id/nov_my"
+        android:title="我的"
+        android:checked="false"
+        android:icon="@mipmap/my">我的</item>
+</menu>

@@ -24,6 +24,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -39,6 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MusicFragment extends Fragment implements AdapterView.OnItemClickListener {
+    private static final String TAG = "MusicFragment";
     private MusicControllerBar musicRelativeLayout;
     private Context mContext;
     private Activity mActivity;
@@ -52,6 +54,7 @@ public class MusicFragment extends Fragment implements AdapterView.OnItemClickLi
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.music_fragment, container, false);
+        Log.d(TAG, "进入音乐播放器");
         initView();//控件实例化
         requestPermission();
         getMusicInfo();
@@ -63,6 +66,7 @@ public class MusicFragment extends Fragment implements AdapterView.OnItemClickLi
         //初始化数据  结合适配器
         LinearLayoutManager gridLayoutManager = new LinearLayoutManager(mContext);
         recyclerView.setLayoutManager(gridLayoutManager);
+        recyclerView.addItemDecoration(new DividerItemDecoration(mContext,DividerItemDecoration.HORIZONTAL));
         musicAdapter = new MusicAdapter(musics);
         recyclerView.setAdapter(musicAdapter);
         return view;

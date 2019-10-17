@@ -28,6 +28,7 @@ public class GetBitMapById {
             album_art = cur.getString(0);
         }
         cur.close();
+
         Bitmap bm = null;
         if (album_art != null) {
             bm = BitmapFactory.decodeFile(album_art);
@@ -35,6 +36,5 @@ public class GetBitMapById {
             bm = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.music_albnum_picture);
         }
         return bm;
-
     }
 }

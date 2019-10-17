@@ -46,6 +46,7 @@ public class MusicService extends Service {
     private MusicReceiver mr;
     private NotificationCompat.Builder builder;
     private boolean isPlay = true;
+    private static final String TAG = "MusicService";
 
 
     /**
@@ -77,6 +78,7 @@ public class MusicService extends Service {
         intentfilter.addAction(MusicOperate.PAUSE);
         intentfilter.addAction(MusicOperate.CONTINUE);
         intentfilter.addAction(MusicOperate.isPlay);
+        intentfilter.addAction(MusicOperate.STOP);
         registerReceiver(mr, intentfilter);
 
     }
@@ -92,6 +94,9 @@ public class MusicService extends Service {
         @Override
         public void Play(Intent intent) {
             music = (Music) intent.getParcelableExtra(MUSIC);
+
+            Intent show_intent = new Intent(MusicOperate.SHOW_BOTTOM);
+            mContext.sendBroadcast(show_intent);
 
 
             try {
@@ -165,6 +170,15 @@ public class MusicService extends Service {
             notificationManager.notify(1, notification);//播放音乐之前获取通知
 
         }
+
+        /**
+         * 歌曲清除,通知消失
+         */
+        @Override
+        public void stop() {
+            musicPlayer.stop();
+            notificationManager.cancel(1);
+        }
     };
 
     /**
@@ -210,6 +224,7 @@ public class MusicService extends Service {
      * 设置通知点击发送广播
      */
     private void setOnClickBroadCast() {
+        //暂停或者继续
         Intent intent = new Intent(MusicOperate.isPlay);
         intent.putExtra("isPlay", isPlay);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -262,12 +277,25 @@ public class MusicService extends Service {
                     musicListener.continue1();
                     break;
                 case MusicOperate.isPlay:
-                    Log.d("convert", "进入convert()");
+                    Log.d(TAG, "onReceive: 进入convert()");
                     musicListener.convert();
+                    break;
+                case MusicOperate.STOP:
+                    Log.d(TAG,"接收到清除广播");
+                    musicListener.stop();
+                    break;
                 default:
             }
+
         }
     }
 
-
+    @Override
+    public void onDestroy() {
+        if(musicPlayer.isPlaying()){
+            musicPlayer.stop();
+        }
+        musicPlayer.release();
+        super.onDestroy();
+    }
 }

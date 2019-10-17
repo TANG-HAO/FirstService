@@ -14,4 +14,7 @@ public interface MusicOperate {
     String NEXT_MUSIC = "next_music";
     String NEXT_MUSIC_REPLY = "next_music_reply";
     String PREVIOUS_MUSIC = "previous_music";
+    String STOP = "stop";
+    String SHOW_BOTTOM = "show";
+    String DISSHOW_BOTTOM = "disshow_bottom";
 }

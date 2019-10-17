@@ -21,4 +21,9 @@ public interface MusicListener {
      * 判断翻转
      */
     void convert();
+
+    /**
+     * 清除歌曲
+     */
+    void stop();
 }

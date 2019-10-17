@@ -83,6 +83,9 @@ public class MusicControllerBar extends RelativeLayout implements View.OnClickLi
     private static List<Music> reverseList;
     private ImageView deleteAllImage;//清空
     private static TextView musicCount;
+    private ImageView deleteOne;
+    private static final String TAG = "MusicControllerBar";
+    private Dialog dialog;
 
 
     public MusicControllerBar(Context context, AttributeSet attrs) {
@@ -111,6 +114,9 @@ public class MusicControllerBar extends RelativeLayout implements View.OnClickLi
         intentFilter.addAction(MusicOperate.MUSIC_COUNT);
         intentFilter.addAction(MusicOperate.NEXT_MUSIC);
         intentFilter.addAction(MusicOperate.PREVIOUS_MUSIC);
+        intentFilter.addAction(MusicOperate.SHOW_BOTTOM);
+        intentFilter.addAction(MusicOperate.PLAY);
+        intentFilter.addAction(MusicOperate.DISSHOW_BOTTOM);
         mContext.registerReceiver(musicReceiver, intentFilter);
 
     }
@@ -175,8 +181,10 @@ public class MusicControllerBar extends RelativeLayout implements View.OnClickLi
         isPlay = false;
     }
 
-    public static void setMusicList(List<Music> musicList) {
-        musicCount.setText(musicList.size() + "");
+    public static void setMusicList(List<Music> musicList1) {
+        musicCount.setText(musicList1.size() + "");
+        musicList = musicList1;
+
     }
 
     /**
@@ -213,7 +221,7 @@ public class MusicControllerBar extends RelativeLayout implements View.OnClickLi
                 break;
             case R.id.menu_button:
                 //展示dailog
-                Log.d("dialog", "点击出现dialog");
+                Log.d(TAG, "onClick: 点击出现dialog");
                 showDynamicList(mContext, R.layout.dynamic_dialog);
                 break;
         }
@@ -226,13 +234,11 @@ public class MusicControllerBar extends RelativeLayout implements View.OnClickLi
      * @param layout_id
      */
     private void showDynamicList(Context mContext, int layout_id) {
-        Log.d("dialog", "点击出现dialog");
+        Log.d(TAG, "showDynamicList: 显示音乐列表");
         //动态加载视图，从视图中实例化recycleView,将点击的music反转塞入，将视图set进创建的dialog
         View view = View.inflate(mContext, layout_id, null);
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(mContext, 1);
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.musci_dynamic_recycle_view);
-        recyclerView.setLayoutManager(gridLayoutManager);
+
 
         //reverseList = musicList;
         //Collections.reverse(reverseList);
@@ -241,16 +247,13 @@ public class MusicControllerBar extends RelativeLayout implements View.OnClickLi
         deleteAllImage.setOnClickListener(new onClick());
 
 
-        musicCount.setText(reverseList.size() + "");//显示musicList的数据
 
 
-        adapter = new MusicDynamicAdapter(reverseList);
-        recyclerView.setAdapter(adapter);
-        //adapter.notifyDataSetChanged();
+        musicCount.setText((reverseList == null ? 0 : reverseList.size())+"");//显示musicList的数据
 
 
-
-        Dialog dialog = new Dialog(mContext, R.style.NormalDialogStyle);//设置样式 在styles中添加style
+        //设置样式 在styles中添加style
+        dialog = new Dialog(mContext, R.style.NormalDialogStyle);
         dialog.setContentView(view);
         Window window = dialog.getWindow();
         window.setLayout(WindowManager.LayoutParams.FILL_PARENT, ScreenUtils.getScreenHeight(mContext) / 12 * 7);//设置弹出框高宽
@@ -260,6 +263,16 @@ public class MusicControllerBar extends RelativeLayout implements View.OnClickLi
         //设置触摸外边界消失
         dialog.setCanceledOnTouchOutside(true);
         dialog.show();
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(mContext, 1);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.musci_dynamic_recycle_view);
+        recyclerView.setLayoutManager(gridLayoutManager);
+
+        adapter = new MusicDynamicAdapter(reverseList,mContext);
+        recyclerView.setAdapter(adapter);
+        //adapter.notifyDataSetChanged();
+
+
 
 
     }
@@ -272,11 +285,17 @@ public class MusicControllerBar extends RelativeLayout implements View.OnClickLi
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.music_delete_all:
-                    Log.d("点击清空", "清空");
+                    Log.d(TAG, "onClick: 点击清空列表");
                     reverseList.clear();
                     musicCount.setText(reverseList.size() + "");
                     adapter.notifyDataSetChanged();
-
+                    if(mediaPlayer_reciver!=null){
+                        //mediaPlayer_reciver.stop();//清除当前的音乐
+                        Intent intent = new Intent(MusicOperate.STOP);
+                        mContext.sendBroadcast(intent);
+                    }
+                    dialog.dismiss();//dialog消失
+                    setVisibility(GONE);
                     break;
                 default:
             }
@@ -289,6 +308,7 @@ public class MusicControllerBar extends RelativeLayout implements View.OnClickLi
     private void initDynamicView(View view) {
 
         deleteAllImage = (ImageView) view.findViewById(R.id.music_delete_all);
+
         musicCount = (TextView) view.findViewById(R.id.music_list_size);
 
     }
@@ -322,6 +342,7 @@ public class MusicControllerBar extends RelativeLayout implements View.OnClickLi
                     break;
                 case MusicOperate.MUSIC_COUNT:
                     setMusicCount(intent);
+                    break;
                 case MusicOperate.NEXT_MUSIC:
                     Log.d(TAG,"接收到播放下一首的广播");
                     playNextMusic(intent);
@@ -330,9 +351,33 @@ public class MusicControllerBar extends RelativeLayout implements View.OnClickLi
                     Log.d(TAG,"接收到播放上一首的广播");
                     playPreviousMusic(intent);
                     break;
+                case MusicOperate.SHOW_BOTTOM:
+                    Log.d(TAG,"接收到显示底部控件广播");
+                    setVisibility(VISIBLE);
+                    break;
+                case MusicOperate.PLAY:
+                    Log.d(TAG,"接收到播放音乐的广播，为获得当前播放歌曲的id");
+                    setMusicInfoToAdapter(intent);
+                    break;
+                case MusicOperate.DISSHOW_BOTTOM:
+                    Log.d(TAG, "onReceive: MusicOperate.DISSHOW_BOTTOM"+"没有歌曲底部控件消失");
+                    dialog.dismiss();
+                    setVisibility(GONE);
+                    break;
                 default:
             }
         }
+    }
+
+    /**
+     * 获取穿给adapter的music
+     * @param intent
+     */
+    private void setMusicInfoToAdapter(Intent intent) {
+        Log.d(TAG,"通过静态方法设置音乐信息给adapter");
+        Music music = (Music) intent.getParcelableExtra(MusicOperate.MUSIC);
+        MusicDynamicAdapter.setMusicInfo(music);
+
     }
 
     /**
@@ -393,11 +438,11 @@ public class MusicControllerBar extends RelativeLayout implements View.OnClickLi
      */
     private int getMusicPosition(Intent intent,String musicString) {
         Music music = (Music) intent.getParcelableExtra(musicString);
+        Log.d(TAG, "getMusicPosition: 准备获取下一首歌的id"+music.toString());
         int position = 0;
         for (int i = 0; i < reverseList.size(); i++) {
             if (reverseList.get(i).id==music.id){
                 position=i;
-
             }
         }
         return position;
@@ -408,6 +453,7 @@ public class MusicControllerBar extends RelativeLayout implements View.OnClickLi
      */
     private void setMusicCount(Intent intent) {
         int music_count = intent.getIntExtra(MusicOperate.MUSIC_COUNT, 0);
+        Log.d(TAG, "onReceive: 音乐列表的数目为："+music_count);
         musicCount.setText(music_count+"");
     }
 
