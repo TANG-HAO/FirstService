@@ -26,22 +26,23 @@ public class MusicDynamicAdapter extends RecyclerView.Adapter<MusicDynamicAdapte
     private Music music;
     private static Context mContext;
     private int position;
-   // private ViewHolder holder;
-    private static  long music_id;
+    // private ViewHolder holder;
+    private static long music_id;
     private View view;
 
-    public MusicDynamicAdapter(List<Music> musicList,Context context) {
+    public MusicDynamicAdapter(List<Music> musicList, Context context) {
         this.musicList = musicList;
         mContext = context;
     }
 
     /**
      * 获得点击的music,需要当前的播放的music
+     *
      * @param music
      */
     public static void setMusicInfo(Music music) {
         Log.d(TAG, "setMusicInfo: 获得了music_id");
-        music_id=music.id;
+        music_id = music.id;
 
     }
 
@@ -59,11 +60,11 @@ public class MusicDynamicAdapter extends RecyclerView.Adapter<MusicDynamicAdapte
 
                         int position = holder.getAdapterPosition();
 
-                        Log.d(TAG, "onClick: 获取删除的音乐位置："+position+"=="+holder.toString());
+                        Log.d(TAG, "onClick: 获取删除的音乐位置：" + position + "==" + holder.toString());
                         if (position < 0) {
                             position = 0;
                         }
-                        if (music_id == musicList.get(position).id){
+                        if (music_id == musicList.get(position).id) {
                             Log.d(TAG, "onClick: 准备发送暂停广播");
                             Intent intent1 = new Intent(MusicOperate.STOP);
                             mContext.sendBroadcast(intent1);
@@ -72,10 +73,11 @@ public class MusicDynamicAdapter extends RecyclerView.Adapter<MusicDynamicAdapte
 
                         musicList.remove(musicList.get(position));
                         notifyItemRemoved(position);
-                        notifyItemRangeRemoved(position,musicList.size());//
+                        notifyItemRangeRemoved(position, musicList.size());//
 
-
-
+                        Intent next_intent = new Intent(MusicOperate.PLAY);
+                        next_intent.putExtra("music", musicList.get(position));
+                        mContext.sendBroadcast(next_intent);
 
 
                         //通知music数目的变化
@@ -84,11 +86,11 @@ public class MusicDynamicAdapter extends RecyclerView.Adapter<MusicDynamicAdapte
 
 
                         //MusicControllerBar.setMusicList(musicList);//通知music数量改变了
-                        if(musicList.size()==0){
-                            Log.d(TAG, "onClick: musicList.size()=  "+musicList.size());
+                        if (musicList.size() == 0) {
+                            Log.d(TAG, "onClick: musicList.size()=  " + musicList.size());
                             Log.d(TAG, "onClick: 准备发送底部控件消失广播");
                             intent.setAction(MusicOperate.DISSHOW_BOTTOM);
-                            Log.d(TAG, "onClick: "+intent.getAction().toString());
+                            Log.d(TAG, "onClick: " + intent.getAction().toString());
                         }
                         mContext.sendBroadcast(intent);
 
@@ -97,6 +99,7 @@ public class MusicDynamicAdapter extends RecyclerView.Adapter<MusicDynamicAdapte
                 }
             }
         });
+
         return holder;
     }
 
@@ -108,12 +111,11 @@ public class MusicDynamicAdapter extends RecyclerView.Adapter<MusicDynamicAdapte
         holder.artistText.setText(music.artist);
 
 
-
     }
 
     @Override
     public int getItemCount() {
-        return musicList == null ? 0:musicList.size();
+        return musicList == null ? 0 : musicList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -171,7 +173,7 @@ public class MusicDynamicAdapter extends RecyclerView.Adapter<MusicDynamicAdapte
 //    }
 
     private void setMusicList(List<Music> musicList) {
-        this.musicList=musicList;
+        this.musicList = musicList;
     }
 
 

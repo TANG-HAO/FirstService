@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.firstservice.R;
@@ -63,7 +65,24 @@ public class NovelFragment extends androidx.fragment.app.Fragment {
         sortFragment=new SortFragment();
         rankFragment=new RankFragment();
         myFragment=new MyFragment();
+    }
 
+    public class NovelFragmentPageHelpAdapter extends FragmentPagerAdapter {
+
+        public NovelFragmentPageHelpAdapter(@NonNull FragmentManager fm) {
+            super(fm);
+        }
+
+        @NonNull
+        @Override
+        public Fragment getItem(int position) {
+            return views.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return views.size();
+        }
 
     }
 }
